@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Empire on Borrowed Money</title>
+<style>
+  :root{
+    --bg:#0d1513; --bg2:#101c19; --panel:#16241f; --panel2:#1b2c26;
+    --ink:#ece2cc; --ink-dim:#9fb0a4; --line:#2c4339;
+    --gold:#d9b65f; --gold-dim:#9c843f; --cream:#efe6d0;
+    --you:#d9b65f; --vane:#b1503f; --vacant:#33493f;
+    --green:#5fb98f; --amber:#e0b03f; --red:#d6593f;
+    --cafe:#d3964c; --grocer:#6fae5f; --apoth:#5f93c9; --theater:#b56ac9;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:radial-gradient(1200px 600px at 50% -10%,#16302a 0%,var(--bg) 60%);
+    color:var(--ink); font-family:"Segoe UI",system-ui,sans-serif; font-size:14px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:14px 18px 40px}
+  h1,h2,h3{font-family:Georgia,"Times New Roman",serif;margin:0;font-weight:600}
+  .deco{letter-spacing:.16em;text-transform:uppercase}
+
+  /* header */
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;
+    border-bottom:2px solid var(--gold-dim);padding-bottom:10px;margin-bottom:14px}
+  .title h1{font-size:24px;color:var(--gold);letter-spacing:.12em}
+  .title .sub{color:var(--ink-dim);font-size:11.5px;letter-spacing:.22em;margin-top:3px}
+  .weekbox{text-align:center}
+  .weekbox .w{font-family:Georgia,serif;font-size:26px;color:var(--cream);line-height:1}
+  .weekbox .l{font-size:10px;letter-spacing:.2em;color:var(--ink-dim);margin-top:2px}
+
+  /* race bar */
+  .race{margin-bottom:14px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
+  .race .lab{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}
+  .race .you{color:var(--gold)} .race .vane{color:var(--vane)}
+  .track{position:relative;height:16px;background:#0c1512;border-radius:9px;overflow:hidden;border:1px solid var(--line)}
+  .track .fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#9c843f,var(--gold));border-radius:9px;transition:width .35s}
+  .track .vmark{position:absolute;top:-3px;bottom:-3px;width:3px;background:var(--vane);box-shadow:0 0 6px var(--vane)}
+  .race .hint{font-size:11px;color:var(--ink-dim);margin-top:6px;text-align:center}
+
+  /* layout */
+  .main{display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start}
+
+  /* board */
+  .city{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:12px}
+  .districts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .district{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:8px;padding:8px}
+  .dhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+  .dhead .nm{font-family:Georgia,serif;font-size:12.5px;color:var(--cream);letter-spacing:.06em}
+  .dhead .sat{font-size:10px;color:var(--ink-dim)}
+  .satbar{height:4px;background:#0c1512;border-radius:3px;overflow:hidden;margin-bottom:8px}
+  .satbar i{display:block;height:100%;background:var(--green)}
+  .lots{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
+  .lot{position:relative;height:62px;border-radius:6px;border:1px solid var(--line);cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+    background:#0e1815;transition:transform .06s,box-shadow .12s;user-select:none;text-align:center;padding:2px}
+  .lot:hover{transform:translateY(-1px)}
+  .lot.empty{border-style:dashed;color:var(--ink-dim)}
+  .lot.empty .ic{font-size:14px;opacity:.5}
+  .lot.you{background:linear-gradient(180deg,#22321d,#16241a);border-color:var(--gold-dim)}
+  .lot.vane{background:linear-gradient(180deg,#2a1715,#1d1311);border-color:#6e3328}
+  .lot.sel{box-shadow:0 0 0 2px var(--gold),0 0 12px rgba(217,182,95,.4);border-color:var(--gold)}
+  .lot.distressed{border-color:var(--amber);border-style:solid;box-shadow:inset 0 0 0 1px rgba(224,176,63,.35)}
+  .lot .ic{font-size:19px;line-height:1}
+  .lot .ty{font-size:9.5px;letter-spacing:.04em;color:var(--ink)}
+  .lot .tag{font-size:8px;letter-spacing:.12em;color:var(--ink-dim)}
+  .lot .inc{font-size:9px;color:var(--green)}
+  .lot .lease{position:absolute;top:2px;right:4px;font-size:8px;color:var(--ink-dim)}
+  .lot .lease.warn{color:var(--amber)}
+  .lot .pips{position:absolute;bottom:2px;left:0;right:0;font-size:8px;color:var(--gold);letter-spacing:1px}
+  .lot.vane .tag{color:var(--vane)}
+  .lot .fc{position:absolute;bottom:2px;left:0;right:0;font-size:7.5px;letter-spacing:.08em;color:var(--amber)}
+
+  /* side panel */
+  .side{display:flex;flex-direction:column;gap:12px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px}
+  .card h3{font-size:11px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:9px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  .row{display:flex;justify-content:space-between;align-items:center;margin:5px 0;font-size:13px}
+  .row .k{color:var(--ink-dim)} .row .v{color:var(--cream);font-variant-numeric:tabular-nums}
+  .row .v.good{color:var(--green)} .row .v.bad{color:var(--red)} .row .v.gold{color:var(--gold)}
+
+  /* credit meter */
+  .credit .meter{height:12px;background:#0c1512;border-radius:7px;overflow:hidden;border:1px solid var(--line);margin:4px 0 6px}
+  .credit .meter i{display:block;height:100%;transition:width .35s,background .35s}
+  .credit .state{display:inline-block;font-size:10px;letter-spacing:.14em;padding:2px 8px;border-radius:10px;font-weight:600}
+  .credit .note{font-size:11px;color:var(--ink-dim);margin-top:7px;line-height:1.4}
+
+  /* buttons */
+  .btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  button{font-family:inherit;font-size:12px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);
+    border-radius:6px;padding:7px 10px;cursor:pointer;transition:.1s}
+  button:hover:not(:disabled){border-color:var(--gold-dim);color:var(--cream)}
+  button:disabled{opacity:.34;cursor:not-allowed}
+  button.gold{background:linear-gradient(180deg,#d9b65f,#b8993f);border:none}
+  .endweek{width:100%;padding:13px;font-size:15px;letter-spacing:.14em;color:#1a130a;font-weight:700;
+    background:linear-gradient(180deg,var(--gold),#b8983c);border:none;border-radius:8px;cursor:pointer;
+    text-transform:uppercase;font-family:Georgia,serif}
+  .endweek:hover{filter:brightness(1.07)}
+
+  /* buy options */
+  .buyopt{display:flex;align-items:center;gap:9px;padding:8px;border:1px solid var(--line);border-radius:7px;margin:6px 0;cursor:pointer;transition:.1s}
+  .buyopt:hover:not(.dis){border-color:var(--gold-dim);background:var(--panel2)}
+  .buyopt.dis{opacity:.4;cursor:not-allowed}
+  .buyopt .bic{font-size:20px;width:26px;text-align:center}
+  .buyopt .bmid{flex:1}
+  .buyopt .bn{font-size:13px;color:var(--cream)}
+  .buyopt .bd{font-size:10.5px;color:var(--ink-dim)}
+  .buyopt .bright{text-align:right}
+  .buyopt .bcost{font-size:12px}
+  .buyopt .binc{font-size:10.5px;color:var(--green)}
+
+  .pl{font-size:12.5px}
+  .pl .ln{display:flex;justify-content:space-between;margin:4px 0;color:var(--ink-dim)}
+  .pl .ln b{color:var(--cream);font-weight:500}
+  .pl .net{border-top:1px solid var(--line);margin-top:6px;padding-top:6px;color:var(--green);font-size:14px}
+
+  .log{font-size:11.5px;color:var(--ink-dim);line-height:1.5;max-height:120px;overflow:auto}
+  .log .ev{color:var(--amber)} .log .gd{color:var(--green)} .log .bd{color:var(--red)}
+
+  .muted{color:var(--ink-dim);font-size:11.5px;line-height:1.5}
+  .help{font-size:11px;color:var(--ink-dim);margin-top:10px;text-align:center;line-height:1.6}
+
+  /* overlay */
+  .overlay{position:fixed;inset:0;background:rgba(6,11,9,.92);display:flex;align-items:center;justify-content:center;z-index:50}
+  .overlay .box{background:var(--panel);border:2px solid var(--gold);border-radius:12px;padding:32px 40px;text-align:center;max-width:440px}
+  .overlay h2{font-size:26px;color:var(--gold);letter-spacing:.1em;margin-bottom:10px}
+  .overlay p{color:var(--ink);font-size:14px;line-height:1.6;margin:6px 0}
+  .overlay .big{font-size:15px;color:var(--cream);margin:14px 0}
+  .hidden{display:none}
+
+  .rule{display:flex;gap:12px;align-items:flex-start;margin:11px 0;font-size:13px;line-height:1.5;color:var(--ink)}
+  .rule .ri{font-size:20px;line-height:1.2;flex-shrink:0}
+  .rule b{color:var(--cream)}
+  .buyopt.best{border-color:var(--gold);box-shadow:inset 0 0 0 1px rgba(217,182,95,.3)}
+  .buyopt.best .bn:after{content:' ★ best';color:var(--gold);font-size:10px;letter-spacing:.06em}
+  .howto{cursor:pointer;color:var(--gold-dim);text-decoration:underline;text-underline-offset:2px}
+  .howto:hover{color:var(--gold)}
+
+  /* report toast */
+  .toast{background:var(--panel2);border:1px solid var(--gold-dim);border-left:3px solid var(--gold);
+    border-radius:7px;padding:9px 12px;font-size:12px;color:var(--ink);margin-bottom:12px;line-height:1.5}
+  .toast .ev{color:var(--amber)} .toast .bd{color:var(--red)} .toast .gd{color:var(--green)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="title">
+      <h1>Empire on Borrowed Money</h1>
+      <div class="sub">Lower East Side &middot; 1924</div>
+    </div>
+    <div class="weekbox">
+      <div class="w"><span id="wk">1</span><span style="color:var(--ink-dim);font-size:16px">/24</span></div>
+      <div class="l">THE WEEK</div>
+    </div>
+  </header>
+
+  <div class="race">
+    <div class="lab"><span class="you">YOU &mdash; <b id="ynw">$0</b></span><span class="vane"><b id="vnw">$0</b> &mdash; CORNELIUS VANE</span></div>
+    <div class="track"><div class="fill" id="rfill" style="width:50%"></div><div class="vmark" id="rvane" style="left:50%"></div></div>
+    <div class="hint" id="rhint">Out-build Vane's net worth by Week 24.</div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <div class="main">
+    <div class="city">
+      <div class="districts" id="districts"></div>
+      <div class="help">Click a vacant lot to build &middot; click your shops to manage them &middot; <span class="howto" onclick="showIntro()">ⓘ How to play</span></div>
+      <div class="help" style="opacity:.5;font-size:10px;margin-top:2px">This prototype records anonymous gameplay stats (no personal data) to help balance it.</div>
+    </div>
+
+    <div class="side">
+      <div class="card">
+        <h3>Treasury</h3>
+        <div class="row"><span class="k">Cash on hand</span><span class="v gold" id="cash">$0</span></div>
+        <div class="row"><span class="k">Debt</span><span class="v" id="debt">$0</span></div>
+        <div class="row"><span class="k">Weekly income</span><span class="v good" id="winc">$0</span></div>
+        <div class="row"><span class="k">Net worth</span><span class="v" id="nw">$0</span></div>
+        <div class="btns">
+          <button id="b250" onclick="doBorrow(300)">Borrow $300</button>
+          <button id="bmax" onclick="doBorrowMax()">Borrow Max</button>
+          <button id="rep" onclick="doRepay()">Repay All</button>
+        </div>
+      </div>
+
+      <div class="card credit">
+        <h3>Credit Market</h3>
+        <div class="meter"><i id="froth" style="width:45%"></i></div>
+        <span class="state" id="cstate">STEADY</span>
+        <div class="row" style="margin-top:8px"><span class="k">Interest / wk</span><span class="v" id="irate">2%</span></div>
+        <div class="row"><span class="k">Borrowing power</span><span class="v" id="bcap">$0</span></div>
+        <div class="note" id="cnote"></div>
+      </div>
+
+      <div class="card" id="detail">
+        <h3>The City</h3>
+        <div class="muted">Select a lot to inspect it.</div>
+      </div>
+
+      <div class="card">
+        <h3>Ledger</h3>
+        <div class="log" id="log"></div>
+      </div>
+
+      <button class="endweek" onclick="doEndWeek()">End Week &raquo;</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="overlay"><div class="box">
+  <h2 id="ovh">—</h2>
+  <p id="ovp">—</p>
+  <div class="big" id="ovb">—</div>
+  <button class="endweek" style="width:auto;padding:11px 26px" onclick="restart()">Play Again</button>
+</div></div>
+
+<div class="overlay hidden" id="intro"><div class="box" style="max-width:540px;text-align:left">
+  <h2 style="text-align:center">Empire on Borrowed Money</h2>
+  <p style="text-align:center;color:var(--ink-dim);margin:0 0 16px">Lower East Side, 1924. You have 24 weeks to build a bigger fortune than the financier Cornelius Vane. Here's how the money works:</p>
+  <div class="rule"><span class="ri">🎯</span><div><b>Win the race.</b> End Week 24 with a higher <b>net worth</b> than Vane — the bar at the top. You start behind.</div></div>
+  <div class="rule"><span class="ri">🤝</span><div><b>Mix your blocks.</b> A shop earns <b>+25% for each <i>different</i> shop you own next to it</b> (up to +50%). Two of the same type next to each other? No bonus. Build variety.</div></div>
+  <div class="rule"><span class="ri">🏙️</span><div><b>Don't flood a district.</b> Each neighborhood has limited customers. Cram too many shops into one and they <b>all earn less</b>. Spread across districts.</div></div>
+  <div class="rule"><span class="ri">💰</span><div><b>Borrow to grow.</b> Cash alone is too slow — Vane will grab the best lots first. Leverage up while credit is calm. But watch the <b>Credit Market</b>: when froth runs red a <b>crunch</b> hits, and if you're over-extended it'll seize your shops. Keep a buffer.</div></div>
+  <button class="endweek" style="width:auto;padding:11px 30px;display:block;margin:18px auto 0" onclick="hideIntro()">Take the City &raquo;</button>
+</div></div>
+
+<script>/*__ENGINE__*/</script>
+<script>
+'use strict';
+var ICON={cafe:'☕',grocer:'🍎',apoth:'⚗️',theater:'🎭'};
+var DNAME=['Tenement Row','Garment Square','Dock Quarter','Bowery Bend'];
+var S, sel=null;
+
+/* ---- anonymous play telemetry (no personal data; just how the game is played) ----
+   Pick a backend by setting TELEMETRY.mode + key/endpoint below. 'console' just logs
+   locally so the game works standalone. Events flush in batches and on page-hide. */
+var TELEMETRY = {
+  mode: 'console',                 // 'console' | 'posthog' | 'endpoint'
+  posthogKey: '', posthogHost: 'https://us.i.posthog.com',
+  endpoint: ''                     // generic POST url (Apps Script / Supabase / Worker)
+};
+var _evq=[], _flushT=null, _session='s'+Math.random().toString(36).slice(2,9), _gameNo=0;
+function _assign(a,b){ for(var k in b){ if(Object.prototype.hasOwnProperty.call(b,k)) a[k]=b[k]; } return a; }
+function _pid(){ try{ var v=localStorage.getItem('eob_pid'); if(!v){ v='p'+Math.random().toString(36).slice(2,10); localStorage.setItem('eob_pid',v); } return v; }catch(e){ return 'p_anon'; } }
+function track(ev, props){
+  var e={ event:ev, ts:Date.now(), props:props||{} };
+  if(TELEMETRY.mode==='console'){ try{ console.log('[track] '+ev, e.props); }catch(_){} }
+  _evq.push(e);
+  if(!_flushT) _flushT=setTimeout(function(){ _flushT=null; _flush(); }, 1500);
+}
+function _flush(){
+  if(!_evq.length) return;
+  var batch=_evq.splice(0,_evq.length), pid=_pid();
+  if(TELEMETRY.mode==='posthog' && TELEMETRY.posthogKey){
+    var body=JSON.stringify({ api_key:TELEMETRY.posthogKey, batch: batch.map(function(e){
+      return { event:e.event, timestamp:new Date(e.ts).toISOString(),
+        properties:_assign({ distinct_id:pid, session:_session, gameNo:_gameNo }, e.props) }; }) });
+    _post(TELEMETRY.posthogHost+'/batch/', body);
+  } else if(TELEMETRY.mode==='endpoint' && TELEMETRY.endpoint){
+    _post(TELEMETRY.endpoint, JSON.stringify({ pid:pid, session:_session, gameNo:_gameNo, events:batch }));
+  }
+}
+function _post(url, body){
+  try{ if(navigator.sendBeacon && navigator.sendBeacon(url, new Blob([body],{type:'text/plain'}))) return; }catch(_){}
+  try{ fetch(url,{method:'POST',mode:'no-cors',keepalive:true,headers:{'Content-Type':'text/plain'},body:body}); }catch(_){}
+}
+if(typeof window!=='undefined'){
+  window.addEventListener('visibilitychange', function(){ if(document.visibilityState==='hidden') _flush(); });
+  window.addEventListener('pagehide', _flush);
+}
+function snapshot(){ return { week:S.week, cash:Math.round(S.cash), debt:Math.round(S.debt),
+  nw:EOB.netWorth(S), vane:EOB.vaneNetWorth(S), froth:Math.round(S.froth), crunch:S.crunch>0, owned:EOB.ownedLots(S).length }; }
+
+function fmt(n){n=Math.round(n);var neg=n<0;n=Math.abs(n);var s=String(n),out='';while(s.length>3){out=','+s.slice(-3)+out;s=s.slice(0,-3);}return (neg?'-$':'$')+s+out;}
+function el(id){return document.getElementById(id);}
+
+// preview: marginal weekly income if `type` were built on `lotId`
+function evalPlace(lotId,type){
+  var before=EOB.weeklyIncome(S,false);
+  S.lots[lotId].biz={type:type,owner:'you',tier:1,lease:EOB.CFG.leaseLen,ramp:0};
+  var after=EOB.weeklyIncome(S,false);
+  S.lots[lotId].biz=null;
+  return after-before;
+}
+function diffNeighbors(lotId){
+  var b=S.lots[lotId].biz,nb=EOB.neighborsOf(lotId),d=0;
+  for(var i=0;i<nb.length;i++){var n=S.lots[nb[i]].biz;if(n&&n.owner==='you'&&n.type!==b.type)d++;}
+  return Math.min(EOB.CFG.synergyMaxNbr,d);
+}
+
+function start(seed){ S=EOB.newGame(seed); sel=null; _gameNo++; el('overlay').className='overlay hidden'; el('toast').className='toast hidden'; track('game_start',{seed:seed}); render(); }
+function restart(){ start((Math.floor(performance.now())%100000)+1); }
+function showIntro(){ el('intro').className='overlay'; track('intro_shown',{}); }
+function hideIntro(){ el('intro').className='overlay hidden'; track('intro_dismissed',{}); }
+window.showIntro=showIntro; window.hideIntro=hideIntro;
+
+function selectLot(id){ sel=id; render(); }
+window.selectLot=selectLot;
+
+function doBorrow(a){ var b=S.debt; EOB.borrow(S,a); if(S.debt>b) track('borrow',{amount:Math.round(S.debt-b),week:S.week,froth:Math.round(S.froth),debt:Math.round(S.debt)}); render(); }
+function doBorrowMax(){ var b=S.debt; EOB.borrow(S,EOB.borrowCapacity(S)); if(S.debt>b) track('borrow',{amount:Math.round(S.debt-b),week:S.week,froth:Math.round(S.froth),debt:Math.round(S.debt),max:true}); render(); }
+function doRepay(){ var b=S.debt; EOB.repay(S,S.debt); if(S.debt<b) track('repay',{amount:Math.round(b-S.debt),week:S.week}); render(); }
+function doBuy(type){ if(sel==null)return; var lot=sel,cost=EOB.costToBuy(S,type,sel); if(EOB.buy(S,lot,type)) track('build',{type:type,district:S.lots[lot].district,cost:cost,week:S.week,froth:Math.round(S.froth)}); render(); }
+function doUpgrade(){ if(sel==null)return; var b=S.lots[sel].biz,t=b?b.type:'',tr=b?b.tier:0; if(EOB.upgrade(S,sel)) track('upgrade',{type:t,toTier:tr+1,week:S.week}); render(); }
+function doRenew(){ if(sel==null)return; if(EOB.renew(S,sel)) track('renew',{week:S.week}); render(); }
+function doSell(){ if(sel==null)return; var b=S.lots[sel].biz,t=b?b.type:''; if(EOB.sell(S,sel)){ track('sell',{type:t,week:S.week}); sel=null; } render(); }
+window.doBorrow=doBorrow;window.doBorrowMax=doBorrowMax;window.doRepay=doRepay;
+window.doBuy=doBuy;window.doUpgrade=doUpgrade;window.doRenew=doRenew;window.doSell=doSell;
+
+function doEndWeek(){
+  if(S.over)return;
+  var rep=EOB.endWeek(S);
+  showReport(rep);
+  track('week_end', _assign(snapshot(), {week:rep.week, income:rep.income, interest:rep.interest, foreclosed:rep.marginSold.length, lapsed:rep.lapsed.length}));
+  if(rep.events.indexOf('crunch')>=0) track('crunch',{week:rep.week,froth:Math.round(S.froth)});
+  if(rep.marginSold.length) track('foreclosure',{week:rep.week,count:rep.marginSold.length});
+  if(S.over){ endGame(); return; }
+  render();
+}
+window.doEndWeek=doEndWeek;
+
+function showReport(rep){
+  var parts=[];
+  parts.push('<b>Week '+rep.week+':</b> <span class="gd">+'+fmt(rep.income)+'</span> income');
+  if(rep.interest>0)parts.push('<span class="bd">-'+fmt(rep.interest)+'</span> interest');
+  var ev=[];
+  if(rep.events.indexOf('crunch')>=0)ev.push('<span class="ev">&#128165; CREDIT CRUNCH &mdash; interest spikes, prices crash, foreclosures hit the market.</span>');
+  if(rep.events.indexOf('recover')>=0)ev.push('<span class="gd">Markets steadied. Credit loosens again.</span>');
+  if(rep.marginSold.length)ev.push('<span class="bd">Foreclosure &mdash; the bank took '+rep.marginSold.length+' of your weakest propert'+(rep.marginSold.length>1?'ies':'y')+' to cover the debt. You carry on.</span>');
+  if(rep.lapsed.length)ev.push('<span class="ev">'+rep.lapsed.length+' lease'+(rep.lapsed.length>1?'s':'')+' expired &mdash; lost to the market.</span>');
+  var html=parts.join(' &middot; ');
+  if(ev.length)html+='<br>'+ev.join('<br>');
+  var t=el('toast'); t.innerHTML=html; t.className='toast';
+}
+
+function render(){
+  // header / treasury
+  el('wk').textContent=S.week;
+  el('cash').textContent=fmt(S.cash);
+  el('debt').textContent=fmt(S.debt);
+  el('winc').textContent=fmt(EOB.weeklyIncome(S,false));
+  var nw=EOB.netWorth(S), vnw=EOB.vaneNetWorth(S);
+  el('nw').textContent=fmt(nw);
+  el('ynw').textContent=fmt(nw); el('vnw').textContent=fmt(vnw);
+  // race bar: your share of (you+vane)
+  var tot=Math.max(1,nw+vnw), share=Math.max(0,Math.min(1,nw/tot));
+  el('rfill').style.width=(share*100).toFixed(1)+'%';
+  el('rvane').style.left='50%';
+  el('rhint').innerHTML = nw>vnw ? 'You lead by '+fmt(nw-vnw)+'. Hold it to Week 24.' : 'Vane leads by '+fmt(vnw-nw)+'. '+(24-S.week+1)+' weeks to overtake him.';
+
+  // credit
+  var f=Math.round(S.froth);
+  el('froth').style.width=f+'%';
+  var cs=EOB.creditLabel(S), col=cs==='CRUNCH'?'var(--red)':(cs==='FROTHY'?'var(--amber)':(cs==='TIGHT'?'var(--ink-dim)':'var(--green)'));
+  el('froth').style.background=col;
+  var st=el('cstate'); st.textContent=cs; st.style.background='rgba(0,0,0,.25)'; st.style.color=col; st.style.border='1px solid '+col;
+  el('irate').textContent=Math.round(EOB.interestRate(S)*100)+'%';
+  el('bcap').textContent=fmt(EOB.borrowCapacity(S));
+  var note;
+  if(S.crunch>0)note='&#128165; <b style="color:var(--red)">Crunch.</b> Debt is punishing and asset values have crashed &mdash; but foreclosed lots are going for half price if you have cash.';
+  else if(S.froth>=70)note='&#9888; <b style="color:var(--amber)">Froth is rising.</b> A crunch looms. If you\'re heavily leveraged, repay now &mdash; or get margin-called when it breaks.';
+  else if(S.froth<=35)note='Credit is tight. Borrowing power is limited.';
+  else note='Credit is calm. A good window to borrow and expand.';
+  el('cnote').innerHTML=note;
+
+  el('bmax').disabled=EOB.borrowCapacity(S)<=0;
+  el('rep').disabled=S.debt<=0||S.cash<=0;
+  el('b250').disabled=EOB.borrowCapacity(S)<300;
+
+  renderBoard();
+  renderDetail();
+  renderLog();
+}
+
+function renderBoard(){
+  var html='';
+  for(var d=0;d<4;d++){
+    var raw=EOB.districtRaw(S,d,false), demand=EOB.CFG.districtDemand;
+    var used=Math.min(150,Math.round(raw/demand*100));
+    var satcol=used<70?'var(--green)':(used<100?'var(--amber)':'var(--red)');
+    html+='<div class="district"><div class="dhead"><span class="nm">'+DNAME[d]+'</span><span class="sat">'+(raw>0?used+'% demand':'open')+'</span></div>';
+    html+='<div class="satbar"><i style="width:'+Math.min(100,used)+'%;background:'+satcol+'"></i></div><div class="lots">';
+    // lots in this district, ordered by x then y for a tidy 3x2
+    var ids=[];
+    for(var i=0;i<S.lots.length;i++)if(S.lots[i].district===d)ids.push(i);
+    ids.sort(function(a,b){var A=S.lots[a],B=S.lots[b];return (A.y-B.y)||(A.x-B.x);});
+    for(var k=0;k<ids.length;k++)html+=lotHtml(ids[k]);
+    html+='</div></div>';
+  }
+  el('districts').innerHTML=html;
+}
+
+function lotHtml(id){
+  var lot=S.lots[id], b=lot.biz, c='lot', inner='';
+  if(sel===id)c+=' sel';
+  if(!b){
+    c+=' empty'; if(lot.distressed)c+=' distressed';
+    inner='<div class="ic">✕</div>'+(lot.distressed?'<div class="fc">FORECLOSURE -50%</div>':'<div class="tag">VACANT</div>');
+  } else if(b.owner==='you'){
+    c+=' you';
+    var inc=Math.round(EOB.rawBizIncome(S,id)*EOB.districtEfficiency(S,lot.district));
+    var pips=''; for(var t=1;t<=3;t++)pips+=(t<=b.tier?'●':'○');
+    var lw=b.lease<=3?' warn':'';
+    inner='<div class="lease'+lw+'">L'+b.lease+'</div><div class="ic">'+ICON[b.type]+'</div>'+
+      '<div class="ty">'+EOB.typeOf(b.type).name+'</div>'+
+      (b.ramp>0?'<div class="tag">opening…</div>':'<div class="inc">'+fmt(inc)+'/wk</div>')+
+      '<div class="pips">'+pips+'</div>';
+  } else {
+    c+=' vane';
+    inner='<div class="ic" style="opacity:.85">'+ICON[b.type]+'</div><div class="ty">'+EOB.typeOf(b.type).name+'</div><div class="tag">VANE</div>';
+  }
+  return '<div class="'+c+'" onclick="selectLot('+id+')">'+inner+'</div>';
+}
+
+function renderDetail(){
+  var box=el('detail');
+  if(sel==null){ box.innerHTML='<h3>The City</h3><div class="muted">Select a lot to inspect it. Build diverse clusters for synergy &mdash; but spread across districts so you don\'t exhaust local demand.</div>'; return; }
+  var lot=S.lots[sel], b=lot.biz;
+  if(!b){ renderBuy(box,lot); return; }
+  if(b.owner!=='you'){ box.innerHTML='<h3>'+DNAME[lot.district]+'</h3><div class="row"><span class="k">Owner</span><span class="v bad">Cornelius Vane</span></div><div class="row"><span class="k">Type</span><span class="v">'+ICON[b.type]+' '+EOB.typeOf(b.type).name+'</span></div><div class="muted" style="margin-top:8px">Vane holds this block. You can\'t touch it &mdash; but a credit crunch may force him to sell.</div>'; return; }
+  renderOwned(box,lot,b);
+}
+
+function renderBuy(box,lot){
+  var html='<h3>Vacant Lot &middot; '+DNAME[lot.district]+'</h3>';
+  if(lot.distressed)html+='<div class="toast" style="margin:0 0 8px;border-left-color:var(--amber)">&#128165; Foreclosure &mdash; selling at half price.</div>';
+  html+='<div class="muted" style="margin-bottom:6px">"+/wk" is the real boost to your whole empire &mdash; it already counts synergy with neighbors and this district\'s leftover demand.</div>';
+  // compute options, mark the best affordable one
+  var opt=[], bestIdx=-1, bestGain=0;
+  for(var i=0;i<EOB.TYPES.length;i++){
+    var ty=EOB.TYPES[i], cost=EOB.costToBuy(S,ty.key,sel), gain=evalPlace(sel,ty.key), afford=S.cash>=cost;
+    opt.push({ty:ty,cost:cost,gain:gain,afford:afford});
+    if(afford&&gain>bestGain){bestGain=gain;bestIdx=i;}
+  }
+  for(i=0;i<opt.length;i++){
+    var o=opt[i], dis=o.afford?'':' dis', best=(i===bestIdx)?' best':'';
+    var click=o.afford?' onclick="doBuy(\''+o.ty.key+'\')"':'';
+    html+='<div class="buyopt'+dis+best+'"'+click+'>'+
+      '<div class="bic">'+ICON[o.ty.key]+'</div>'+
+      '<div class="bmid"><div class="bn">'+o.ty.name+'</div><div class="bd">opens in 1 week</div></div>'+
+      '<div class="bright"><div class="bcost" style="color:'+(o.afford?'var(--cream)':'var(--red)')+'">'+fmt(o.cost)+'</div><div class="binc">+'+fmt(o.gain)+'/wk</div></div>'+
+      '</div>';
+  }
+  if(S.cash<EOB.costToBuy(S,'cafe',sel))html+='<div class="muted" style="margin-top:6px">Short on cash? <b style="color:var(--gold)">Borrow</b> from the Treasury panel to grab it before Vane does.</div>';
+  box.innerHTML=html;
+}
+
+function renderOwned(box,lot,b){
+  var ty=EOB.typeOf(b.type);
+  var base=ty.income*EOB.CFG.tierIncome[b.tier];
+  var dn=diffNeighbors(sel);
+  var gross=EOB.projBizIncome(S,sel);
+  var eff=EOB.districtEfficiency(S,lot.district);
+  var net=Math.round(gross*eff);
+  var html='<h3>'+ICON[b.type]+' '+ty.name+' &middot; '+DNAME[lot.district]+'</h3>';
+  html+='<div class="pl">';
+  html+='<div class="ln"><span>Base (tier '+b.tier+')</span><b>'+fmt(base)+'/wk</b></div>';
+  html+='<div class="ln"><span>Synergy &mdash; '+dn+' diverse neighbor'+(dn===1?'':'s')+'</span><b>+'+(dn*EOB.CFG.synergyPerNbr*100)+'%</b></div>';
+  html+='<div class="ln"><span>District demand used (you + rivals)</span><b>'+Math.round(EOB.districtRaw(S,lot.district,false)/EOB.CFG.districtDemand*100)+'% ('+Math.round(eff*100)+'¢/$)</b></div>';
+  html+='<div class="ln net"><span>Net income</span><b style="color:var(--green)">'+fmt(net)+'/wk</b></div>';
+  html+='</div>';
+  html+='<div class="row" style="margin-top:8px"><span class="k">Lease left</span><span class="v'+(b.lease<=3?' bad':'')+'">'+b.lease+' weeks</span></div>';
+  if(b.ramp>0)html+='<div class="muted">Opening &mdash; earns nothing until next week.</div>';
+  // actions
+  html+='<div class="btns">';
+  var uc=EOB.upgradeCost(S,sel);
+  if(uc!=null)html+='<button '+(S.cash>=uc?'':'disabled')+' onclick="doUpgrade()">Upgrade &mdash; '+fmt(uc)+'</button>';
+  else html+='<button disabled>Max tier</button>';
+  var rc=EOB.renewCost(S,sel);
+  html+='<button '+(S.cash>=rc?'':'disabled')+' onclick="doRenew()">Renew lease &mdash; '+fmt(rc)+'</button>';
+  html+='<button onclick="doSell()">Sell &mdash; '+fmt(EOB.resaleValue(S,sel))+'</button>';
+  html+='</div>';
+  box.innerHTML=html;
+}
+
+function renderLog(){
+  var html='', n=S.log.length;
+  for(var i=n-1;i>=Math.max(0,n-6);i--){
+    var r=S.log[i], bits=[];
+    bits.push('W'+r.week+': +'+fmt(r.income));
+    if(r.interest>0)bits.push('<span class="bd">-'+fmt(r.interest)+' int</span>');
+    if(r.events.indexOf('crunch')>=0)bits.push('<span class="ev">crunch</span>');
+    if(r.marginSold.length)bits.push('<span class="bd">foreclosed x'+r.marginSold.length+'</span>');
+    if(r.lapsed.length)bits.push('<span class="ev">lease lost x'+r.lapsed.length+'</span>');
+    html+='<div>'+bits.join(' &middot; ')+'</div>';
+  }
+  el('log').innerHTML=html||'<div>The city awaits.</div>';
+}
+
+function endGame(){
+  render();
+  var nw=EOB.netWorth(S), vnw=EOB.vaneNetWorth(S);
+  var won=S.won;
+  track('game_end',{won:won, week:S.week, nw:nw, vane:vnw, owned:EOB.ownedLots(S).length, gameNo:_gameNo});
+  _flush();
+  el('ovh').textContent=won?'The City Is Yours':'Vane Wins';
+  el('ovh').style.color=won?'var(--gold)':'var(--vane)';
+  el('ovp').textContent=S.reason;
+  el('ovb').innerHTML='You: <b style="color:var(--gold)">'+fmt(nw)+'</b> &nbsp;&middot;&nbsp; Vane: <b style="color:var(--vane)">'+fmt(vnw)+'</b>';
+  el('overlay').className='overlay';
+}
+
+track('app_open',{});
+start((Date.now() % 2000000) + 1);
+showIntro();
+</script>
+</body>
+</html>
