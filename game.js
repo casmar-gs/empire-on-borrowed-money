@@ -40,7 +40,7 @@
     crunchLen: 3,
     // Vane: a scripted rival who actively contests the board
     vaneCashStart: 1200,
-    vaneIncomeFactor: 0.86,    // fraction of his lots' income he banks each week
+    vaneIncomeFactor: 0.96,    // fraction of his lots' income he banks each week
     // NOTE: Vane fully reinvests, so his strength compounds and is sensitive to these
     // knobs. Tuned so imperfect human play can win; leverage is a strong edge, not mandatory.
     vaneMaxLots: 12,           // how much of the board he claims
@@ -54,6 +54,21 @@
     { key: 'theater', name: 'Theater',    cost: 1300, income: 230 }
   ];
   function typeOf(k) { for (var i = 0; i < TYPES.length; i++) if (TYPES[i].key === k) return TYPES[i]; return null; }
+
+  // ---- district character & shop-type affinity ----
+  // Each district has a dominant clientele; a shop earns more where it FITS (and less where it
+  // doesn't). A small, capped table — the spatial decision is "put the right shop in the right
+  // neighbourhood", not just "spread out". Affinity multiplies a shop's raw draw.
+  var DISTRICT_CHAR = ['working', 'commercial', 'transient', 'wealthy']; // by district id 0..3
+  var CHAR_LABEL = { working: 'Working-class', commercial: 'Commercial', transient: 'Dockside', wealthy: 'Old money' };
+  var AFFINITY = {
+    //          working  commercial  transient  wealthy
+    cafe:    { working: 1.30, commercial: 1.00, transient: 1.25, wealthy: 0.72 },
+    grocer:  { working: 1.22, commercial: 1.10, transient: 0.95, wealthy: 0.88 },
+    apoth:   { working: 0.92, commercial: 1.22, transient: 0.82, wealthy: 1.26 },
+    theater: { working: 0.68, commercial: 1.16, transient: 0.90, wealthy: 1.42 }
+  };
+  function affinity(type, district) { var a = AFFINITY[type]; return a ? a[DISTRICT_CHAR[district]] : 1; }
 
   // seeded LCG so credit cycle & sim are reproducible
   function makeRng(seed) {
@@ -147,6 +162,7 @@
   // The "draw" a single occupied lot pulls from its district's customers, for its owner.
   function lotDraw(s, lotId, useRamp) {
     var b = s.lots[lotId].biz; if (!b) return 0;
+    var aff = affinity(b.type, s.lots[lotId].district);   // does this shop fit this neighbourhood?
     if (b.owner === 'you') {
       if (useRamp && b.ramp > 0) return 0;            // not open yet -> draws nothing
       var base = typeOf(b.type).income * CFG.tierIncome[b.tier];
@@ -156,9 +172,9 @@
         if (nb && nb.owner === 'you' && nb.type !== b.type) diff++;
       }
       if (diff > CFG.synergyMaxNbr) diff = CFG.synergyMaxNbr;
-      return base * (1 + diff * CFG.synergyPerNbr);
+      return base * (1 + diff * CFG.synergyPerNbr) * aff;
     }
-    return typeOf(b.type).income * CFG.tierIncome[b.tier];  // rivals: flat draw, always open
+    return typeOf(b.type).income * CFG.tierIncome[b.tier] * aff;  // rivals: flat draw, always open
   }
   // total demand drawn in a district by EVERYONE — generalises to any number of owners
   function districtRaw(s, district, useRamp) {
@@ -347,8 +363,13 @@
     while (bought < cap && vaneLots(s).length < CFG.vaneMaxLots) {
       var empties = emptyLots(s); if (!empties.length) break;
       var pick = pickVaneLot(s, empties);
-      var ty = null;
-      for (var t = TYPES.length - 1; t >= 0; t--) { if (s.vaneCash >= TYPES[t].cost) { ty = TYPES[t].key; break; } }
+      // Vane builds the best-FITTING affordable type for that district (he knows neighbourhoods too)
+      var ty = null, bestScore = -1, dc = s.lots[pick].district;
+      for (var t = 0; t < TYPES.length; t++) {
+        if (s.vaneCash < TYPES[t].cost) continue;
+        var score = TYPES[t].income * affinity(TYPES[t].key, dc);
+        if (score > bestScore) { bestScore = score; ty = TYPES[t].key; }
+      }
       if (!ty) break;
       s.vaneCash -= typeOf(ty).cost;
       placeBiz(s, pick, ty, 'vane', false);
@@ -401,6 +422,7 @@
 
   return {
     CFG: CFG, TYPES: TYPES, typeOf: typeOf,
+    DISTRICT_CHAR: DISTRICT_CHAR, CHAR_LABEL: CHAR_LABEL, affinity: affinity,
     newGame: newGame, neighborsOf: neighborsOf, districtOf: districtOf,
     costToBuy: costToBuy, upgradeCost: upgradeCost, renewCost: renewCost,
     resaleValue: resaleValue, assetValue: assetValue, netWorth: netWorth,

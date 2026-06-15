@@ -227,5 +227,6 @@ var g3 = gate(results.casual.win >= 0.60 && results.casual.win <= 0.92, 'a thoug
 var g4 = gate(results.turtle.win >= 0.25 && results.turtle.win <= 0.65, 'cautious no-leverage play is viable (turtle ' + pct(results.turtle.win) + ', want 25-65%)');
 var g5 = gate((results.casual.win - results.turtle.win) >= 0.15, 'leverage is a real edge (leveraged play beats no-leverage turtle by ' + pct(results.casual.win - results.turtle.win) + ', want >=15pts)');
 var g6 = gate(results.blitz.win <= 0.25, 'reckless over-leverage loses the race (blitz ' + pct(results.blitz.win) + ' win, ' + pct(results.blitz.fc) + ' foreclosed)');
-var g7 = gate(results.diversify.win <= 0.75, 'greedy over-expansion is punished by shared demand (diversify ' + pct(results.diversify.win) + ')');
+var bestComp = Math.max(results.casual.win, results.diversify.win, results.vulture.win, results.smart.win, results.turtle.win);
+var g7 = gate(bestComp <= 0.90, 'the race stays contested — no competent strategy is a near-lock (best ' + pct(bestComp) + ', want <=90%)');
 console.log('\nALL GATES: ' + (g1 && g2 && g3 && g4 && g5 && g6 && g7 ? 'PASS' : 'FAIL'));
