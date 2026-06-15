@@ -879,18 +879,21 @@ function renderDetail(){
 
 function renderBuy(box,lot){
   var html='<h3>Vacant Lot &middot; '+DNAME[lot.district]+'</h3>';
-  html+='<div style="margin:-4px 0 8px;font-family:var(--serif);font-style:italic;font-size:12px;color:var(--brass)">'+charOf(lot.district)+' quarter &mdash; build what fits.</div>';
+  html+='<div style="margin:-4px 0 8px;font-family:var(--serif);font-style:italic;font-size:12px;color:var(--brass)">'+charOf(lot.district)+' quarter &mdash; fit shifts a shop&rsquo;s trade, but the &#9733; marks the best return on your cash.</div>';
   html+='<div class="deed"><div class="portrait">'+vacantSVG()+'</div></div>';
   if(lot.distressed)html+='<div class="deedstamp" style="color:var(--ember);border-color:var(--ember)">Foreclosure &mdash; half price</div>';
-  var opt=[],bestIdx=-1,bestGain=0;
+  // recommend by RETURN (gain per dollar), not raw income or fit — fit is only one input to the draw
+  var opt=[],bestIdx=-1,bestRoi=0;
   for(var i=0;i<EOB.TYPES.length;i++){ var ty=EOB.TYPES[i],cost=EOB.costToBuy(S,ty.key,sel),gain=evalPlace(sel,ty.key),aff=S.cash>=cost;
-    opt.push({ty:ty,cost:cost,gain:gain,aff:aff}); if(aff&&gain>bestGain){bestGain=gain;bestIdx=i;} }
+    var roi=(gain>0&&cost>0)?gain/cost:0;
+    opt.push({ty:ty,cost:cost,gain:gain,aff:aff,roi:roi}); if(aff&&roi>bestRoi){bestRoi=roi;bestIdx=i;} }
   for(i=0;i<opt.length;i++){ var o=opt[i],dis=o.aff?'':' dis',pr=(i===bestIdx)?' prime':'',clk=o.aff?' onclick="doBuy(\''+o.ty.key+'\')"':'';
     var fi=fitInfo(o.ty.key,lot.district), fsym=fi.cls==='fit-good'?'&#10003; ':(fi.cls==='fit-bad'?'&#10007; ':'&middot; ');
-    html+='<div class="acq'+dis+pr+'"'+clk+'>'+(i===bestIdx?'<span class="ribbon">&#9733; Best here</span>':'')+
+    var pay=o.gain>0?('~'+Math.max(1,Math.round(o.cost/o.gain))+'w back'):'no return';
+    html+='<div class="acq'+dis+pr+'"'+clk+'>'+(i===bestIdx?'<span class="ribbon">&#9733; Best return</span>':'')+
       '<div class="ag">'+bldg(o.ty.key,1,'you')+'</div>'+
       '<div class="am"><div class="an">'+o.ty.name+'</div><div class="ad afit '+fi.cls+'" style="font-size:10.5px;font-weight:500">'+fsym+fi.label+' &middot; '+fi.pct+'</div></div>'+
-      '<div class="ar"><div class="ac" style="color:'+(o.aff?'#7a5a1e':'#9a2a18')+'">'+fmt(o.cost)+'</div><div class="ai">+'+fmt(o.gain)+'/wk</div></div></div>'; }
+      '<div class="ar"><div class="ac" style="color:'+(o.aff?'#7a5a1e':'#9a2a18')+'">'+fmt(o.cost)+'</div><div class="ai">+'+fmt(o.gain)+'/wk</div><div class="ad" style="color:#7a5a2a;font-size:9px;text-align:right">'+pay+'</div></div></div>'; }
   if(S.cash<EOB.costToBuy(S,'cafe',sel))html+='<div class="muted" style="margin-top:6px">Short on cash? <b style="color:var(--ember)">Borrow</b> from The Ledger to grab it before Vane does.</div>';
   box.innerHTML=html;
 }
