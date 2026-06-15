@@ -4,229 +4,353 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Empire on Borrowed Money</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0d1513; --bg2:#101c19; --panel:#16241f; --panel2:#1b2c26;
-    --ink:#ece2cc; --ink-dim:#9fb0a4; --line:#2c4339;
-    --gold:#d9b65f; --gold-dim:#9c843f; --cream:#efe6d0;
-    --you:#d9b65f; --vane:#b1503f; --vacant:#33493f;
-    --green:#5fb98f; --amber:#e0b03f; --red:#d6593f;
-    --cafe:#d3964c; --grocer:#6fae5f; --apoth:#5f93c9; --theater:#b56ac9;
+    --night:#0B0A0D; --felt:#13110C; --cobble:#161219; --panel:#1A1610; --raised:#241D2B;
+    --line:#3A3142; --brassline:#5A4A2A; --ink:#EDE6D6; --dim:#8C8398;
+    --ember:#E8843C; --ember-hi:#FFB066; --brass:#C9A24B; --brass-hi:#E6C878; --marble:#E8E2D4;
+    --oxblood:#7A1E22; --oxblood-deep:#4A1216; --vane:#9B2D2F; --vane-cold:#B5474A;
+    --good:#4E7C6B; --warn:#C9A24B; --bad:#9B2D2F;
+    --cafe:#E08A3C; --grocer:#5FA86B; --apoth:#5E8FBE; --theater:#A85BC0;
+    --glow:rgba(232,132,60,.55); --glass:rgba(201,162,75,.10); --scrim:rgba(8,7,10,.86);
+    --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
+    --mono:"JetBrains Mono","SFMono-Regular",Consolas,Menlo,monospace;
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
   body{
-    background:radial-gradient(1200px 600px at 50% -10%,#16302a 0%,var(--bg) 60%);
-    color:var(--ink); font-family:"Segoe UI",system-ui,sans-serif; font-size:14px;
-    -webkit-font-smoothing:antialiased;
+    background:
+      radial-gradient(1100px 520px at 50% -8%, #1c1410 0%, rgba(28,20,16,0) 60%),
+      radial-gradient(900px 700px at 50% 120%, #120f16 0%, rgba(0,0,0,0) 55%),
+      var(--night);
+    color:var(--ink); font-family:var(--mono); font-size:13.5px; -webkit-font-smoothing:antialiased;
+    letter-spacing:.01em;
   }
-  .wrap{max-width:1180px;margin:0 auto;padding:14px 18px 40px}
-  h1,h2,h3{font-family:Georgia,"Times New Roman",serif;margin:0;font-weight:600}
-  .deco{letter-spacing:.16em;text-transform:uppercase}
+  body::after{ /* subtle vignette */
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:60; opacity:.6;
+    background:radial-gradient(140% 100% at 50% 30%, transparent 55%, rgba(6,5,8,.6) 100%);
+  }
+  .wrap{max-width:1200px;margin:0 auto;padding:0 20px 48px;position:relative;z-index:1}
 
-  /* header */
-  header{display:flex;align-items:center;justify-content:space-between;gap:16px;
-    border-bottom:2px solid var(--gold-dim);padding-bottom:10px;margin-bottom:14px}
-  .title h1{font-size:24px;color:var(--gold);letter-spacing:.12em}
-  .title .sub{color:var(--ink-dim);font-size:11.5px;letter-spacing:.22em;margin-top:3px}
-  .weekbox{text-align:center}
-  .weekbox .w{font-family:Georgia,serif;font-size:26px;color:var(--cream);line-height:1}
-  .weekbox .l{font-size:10px;letter-spacing:.2em;color:var(--ink-dim);margin-top:2px}
+  /* ---------- masthead ---------- */
+  .masthead{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 4px 0}
+  .mh-orn{flex:0 0 70px;height:46px;opacity:.8}
+  .mh-mid{flex:1;text-align:center}
+  .mh-mid h1{
+    font-family:var(--serif);font-weight:600;font-size:34px;letter-spacing:.10em;margin:0;line-height:1;
+    color:var(--brass);text-shadow:0 1px 0 rgba(0,0,0,.6);
+    background:linear-gradient(180deg,var(--brass-hi),var(--brass) 55%,#8a6f2e);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .mh-mid .sub{font-family:var(--serif);font-variant:small-caps;letter-spacing:.34em;font-size:13px;color:var(--dim);margin-top:7px}
+  .mh-right{flex:0 0 130px;display:flex;align-items:center;justify-content:flex-end;gap:12px}
+  .weekseal{position:relative;width:62px;height:62px;text-align:center}
+  .weekseal svg{position:absolute;inset:0}
+  .weekseal .rn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif);font-weight:600;font-size:20px;color:var(--brass-hi);letter-spacing:.02em;padding-top:2px}
+  .weekseal .wl{position:absolute;bottom:-4px;left:0;right:0;font-family:var(--serif);font-variant:small-caps;font-size:9px;letter-spacing:.2em;color:var(--dim)}
+  .muteb{width:30px;height:30px;border:1px solid var(--brassline);background:transparent;border-radius:50%;color:var(--dim);cursor:pointer;font-size:13px;line-height:1;padding:0;transition:.15s}
+  .muteb:hover{color:var(--brass);border-color:var(--brass)}
+  .deco-rule{height:6px;margin:14px 0 16px;
+    border-top:1px solid var(--brass);border-bottom:1px solid var(--brassline);position:relative}
+  .deco-rule::before{content:"";position:absolute;left:50%;top:-5px;width:9px;height:9px;transform:translateX(-50%) rotate(45deg);background:var(--brass);box-shadow:0 0 8px rgba(201,162,75,.5)}
 
-  /* race bar */
-  .race{margin-bottom:14px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 14px}
-  .race .lab{display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px}
-  .race .you{color:var(--gold)} .race .vane{color:var(--vane)}
-  .track{position:relative;height:16px;background:#0c1512;border-radius:9px;overflow:hidden;border:1px solid var(--line)}
-  .track .fill{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#9c843f,var(--gold));border-radius:9px;transition:width .35s}
-  .track .vmark{position:absolute;top:-3px;bottom:-3px;width:3px;background:var(--vane);box-shadow:0 0 6px var(--vane)}
-  .race .hint{font-size:11px;color:var(--ink-dim);margin-top:6px;text-align:center}
+  /* ---------- race tug-of-war ---------- */
+  .race{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+  .cameo{flex:0 0 46px;height:46px;border-radius:50%;border:1px solid var(--brassline);overflow:hidden;background:var(--panel)}
+  .cameo.win{box-shadow:0 0 14px var(--glow)}
+  .race-mid{flex:1}
+  .race-lab{display:flex;justify-content:space-between;font-size:11.5px;letter-spacing:.06em;margin-bottom:5px}
+  .race-lab .ry{color:var(--brass)} .race-lab .rv{color:var(--vane-cold)}
+  .race-lab b{font-weight:500}
+  .racetrack{position:relative;height:18px;border-radius:3px;overflow:hidden;
+    box-shadow:inset 0 2px 5px rgba(4,3,2,.7), inset 0 0 0 1px var(--line);background:#0c0a0d}
+  .rfy{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#8a5a22,var(--ember) 70%,var(--brass-hi));transition:width .5s cubic-bezier(.22,1,.36,1)}
+  .rfy::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent);transform:translateX(-100%)}
+  .race.sweep .rfy::after{animation:sheen 1.1s ease-in-out}
+  .rfv{position:absolute;right:0;top:0;bottom:0;background:linear-gradient(90deg,#5a1d20,var(--vane-cold));transition:width .5s cubic-bezier(.22,1,.36,1)}
+  .seam{position:absolute;top:-2px;bottom:-2px;width:0;transition:left .5s cubic-bezier(.22,1,.36,1)}
+  .seam::before{content:"";position:absolute;left:-4px;top:0;bottom:0;width:8px;background:linear-gradient(180deg,var(--brass-hi),var(--vane-cold));clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);box-shadow:0 0 8px rgba(0,0,0,.6)}
+  @keyframes sheen{0%,60%{transform:translateX(-100%)}100%{transform:translateX(220%)}}
+  .race-hint{font-family:var(--serif);font-style:italic;font-size:13.5px;color:var(--dim);text-align:center;margin-top:6px}
+  .race-hint.lead{color:var(--brass)} .race-hint.behind{color:var(--vane-cold)}
+  .seampulse{animation:seamflash .6s ease-out}
+  @keyframes seamflash{0%{filter:brightness(2.2)}100%{filter:none}}
 
-  /* layout */
-  .main{display:grid;grid-template-columns:1fr 340px;gap:16px;align-items:start}
+  /* ---------- layout ---------- */
+  .main{display:grid;grid-template-columns:1fr 332px;gap:18px;align-items:start}
 
-  /* board */
-  .city{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:12px}
-  .districts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .district{background:linear-gradient(180deg,var(--panel),var(--bg2));border:1px solid var(--line);border-radius:8px;padding:8px}
-  .dhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
-  .dhead .nm{font-family:Georgia,serif;font-size:12.5px;color:var(--cream);letter-spacing:.06em}
-  .dhead .sat{font-size:10px;color:var(--ink-dim)}
-  .satbar{height:4px;background:#0c1512;border-radius:3px;overflow:hidden;margin-bottom:8px}
-  .satbar i{display:block;height:100%;background:var(--green)}
-  .lots{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px}
-  .lot{position:relative;height:62px;border-radius:6px;border:1px solid var(--line);cursor:pointer;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
-    background:#0e1815;transition:transform .06s,box-shadow .12s;user-select:none;text-align:center;padding:2px}
-  .lot:hover{transform:translateY(-1px)}
-  .lot.empty{border-style:dashed;color:var(--ink-dim)}
-  .lot.empty .ic{font-size:14px;opacity:.5}
-  .lot.you{background:linear-gradient(180deg,#22321d,#16241a);border-color:var(--gold-dim)}
-  .lot.vane{background:linear-gradient(180deg,#2a1715,#1d1311);border-color:#6e3328}
-  .lot.sel{box-shadow:0 0 0 2px var(--gold),0 0 12px rgba(217,182,95,.4);border-color:var(--gold)}
-  .lot.distressed{border-color:var(--amber);border-style:solid;box-shadow:inset 0 0 0 1px rgba(224,176,63,.35)}
-  .lot .ic{font-size:19px;line-height:1}
-  .lot .ty{font-size:9.5px;letter-spacing:.04em;color:var(--ink)}
-  .lot .tag{font-size:8px;letter-spacing:.12em;color:var(--ink-dim)}
-  .lot .inc{font-size:9px;color:var(--green)}
-  .lot .lease{position:absolute;top:2px;right:4px;font-size:8px;color:var(--ink-dim)}
-  .lot .lease.warn{color:var(--amber)}
-  .lot .pips{position:absolute;bottom:2px;left:0;right:0;font-size:8px;color:var(--gold);letter-spacing:1px}
-  .lot.vane .tag{color:var(--vane)}
-  .lot .fc{position:absolute;bottom:2px;left:0;right:0;font-size:7.5px;letter-spacing:.08em;color:var(--amber)}
+  /* ---------- city / board ---------- */
+  .city{position:relative;padding:16px 16px 12px;border-radius:6px;
+    background:linear-gradient(180deg,#171309,var(--felt));
+    box-shadow:inset 0 0 0 1px var(--brassline), inset 0 0 60px rgba(0,0,0,.6), 0 14px 40px rgba(0,0,0,.5)}
+  .cityplate{text-align:center;font-family:var(--serif);font-variant:small-caps;letter-spacing:.22em;font-size:11px;color:var(--brass);opacity:.75;margin-bottom:12px;
+    border-bottom:1px solid var(--brassline);padding-bottom:9px}
+  .smoke{position:absolute;inset:0;pointer-events:none;opacity:.5;z-index:2}
+  .districts{display:grid;grid-template-columns:1fr 1fr;gap:14px;position:relative;z-index:3}
+  .district{position:relative;background:linear-gradient(180deg,#171019,var(--cobble));border-radius:5px;padding:9px 10px 11px;
+    box-shadow:inset 0 1px 0 rgba(232,132,60,.08), inset 0 -10px 18px rgba(4,3,2,.55), 0 0 0 1px var(--line)}
+  .district.cornered{box-shadow:inset 0 1px 0 rgba(232,132,60,.1), inset 0 -10px 18px rgba(4,3,2,.55), 0 0 0 1px var(--ember), 0 0 16px rgba(232,132,60,.25)}
+  .district.cornered.byvane{box-shadow:inset 0 1px 0 rgba(232,132,60,.05), inset 0 -10px 18px rgba(4,3,2,.55), 0 0 0 1px var(--vane), 0 0 16px rgba(155,45,47,.3)}
+  .dcorner{position:absolute;width:12px;height:12px;border:1px solid var(--brassline);opacity:.7}
+  .dc-tl{top:5px;left:5px;border-right:0;border-bottom:0} .dc-br{bottom:5px;right:5px;border-left:0;border-top:0}
+  .dhead{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .dward{flex:0 0 17px;height:17px;opacity:.85}
+  .dname{flex:1;font-family:var(--serif);font-variant:small-caps;letter-spacing:.1em;font-size:13px;color:var(--marble)}
+  .dname .prize{color:var(--brass)}
+  .dtag{font-size:8.5px;letter-spacing:.16em;color:var(--ember);border:1px solid var(--ember);border-radius:8px;padding:1px 5px;opacity:.9}
+  .dtag.v{color:var(--vane-cold);border-color:var(--vane)}
+  .gauge-chev{display:flex;gap:2px;margin:0 0 8px;height:6px}
+  .gauge-chev i{flex:1;clip-path:polygon(0 0,72% 0,100% 50%,72% 100%,0 100%);background:#241c14;transition:background .35s}
+  .lots{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+  .lot{position:relative;aspect-ratio:1/1.04;border-radius:4px;cursor:pointer;overflow:visible;
+    background:linear-gradient(180deg,#13100b,#0d0b09);box-shadow:inset 0 0 0 1px var(--brassline);
+    transition:transform .12s ease, box-shadow .2s ease;}
+  .lot:hover{transform:translateY(-2px)}
+  .lot .bsvg{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .lot.you{box-shadow:inset 0 0 0 1px #6b5526, 0 0 16px var(--glow)}
+  .lot.you.t3{box-shadow:inset 0 0 0 1px var(--brass), 0 0 26px var(--glow)}
+  .lot.vane{box-shadow:inset 0 0 0 1px #5a2326; cursor:not-allowed; opacity:.92}
+  .lot.vane:hover{transform:none}
+  .lot.vane::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 5px,rgba(122,30,34,.10) 5px,rgba(122,30,34,.10) 7px);border-radius:4px;pointer-events:none}
+  .lot.empty{box-shadow:inset 0 0 0 1px var(--brassline)}
+  .lot.empty:hover{box-shadow:inset 0 0 0 1px var(--ember), 0 0 14px rgba(232,132,60,.2)}
+  .lot.distressed{box-shadow:inset 0 0 0 1px var(--oxblood);animation:fcpulse 2.6s ease-in-out infinite}
+  @keyframes fcpulse{0%,100%{box-shadow:inset 0 0 0 1px var(--oxblood)}50%{box-shadow:inset 0 0 0 1px var(--oxblood),0 0 14px rgba(122,30,34,.35)}}
+  .lot.sel{box-shadow:inset 0 0 0 2px var(--brass-hi), 0 0 20px var(--glow);}
+  .lot .pips{position:absolute;top:3px;left:4px;font-family:var(--serif);font-size:9px;letter-spacing:1px;color:var(--brass);z-index:4;text-shadow:0 1px 1px #000}
+  .lot .seal{position:absolute;top:3px;right:4px;width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--brass-hi),#7d5d1e);box-shadow:0 0 4px rgba(201,162,75,.6);z-index:4}
+  .lot.vane .seal{background:radial-gradient(circle at 35% 30%,#c2585b,#4a1216);box-shadow:0 0 4px rgba(155,45,47,.6)}
+  .lot .lease{position:absolute;bottom:3px;right:4px;font-size:8px;color:var(--dim);z-index:4;text-shadow:0 1px 1px #000}
+  .lot .lease.warn{color:var(--ember-hi)}
+  .lot .inc{position:absolute;bottom:2px;left:0;right:0;text-align:center;font-size:8.5px;color:var(--good);z-index:4;text-shadow:0 1px 2px #000}
+  .lot .vactag{position:absolute;bottom:6px;left:0;right:0;text-align:center;font-family:var(--serif);font-variant:small-caps;font-size:9px;letter-spacing:.14em;color:var(--dim);z-index:4}
+  .lot .vname{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:7.5px;letter-spacing:.14em;color:var(--vane-cold);z-index:4;text-shadow:0 1px 1px #000}
+  .lot .fcstamp{position:absolute;top:42%;left:-6%;right:-6%;transform:rotate(-9deg);text-align:center;font-family:var(--serif);font-size:8.5px;letter-spacing:.06em;color:var(--vane-cold);border-top:1px solid var(--oxblood);border-bottom:1px solid var(--oxblood);background:rgba(74,18,22,.55);z-index:5}
+  .lot.constructing .bsvg{animation:construct .45s cubic-bezier(.2,1.3,.4,1)}
+  @keyframes construct{0%{transform:translateY(10%) scale(.85);opacity:0}60%{opacity:1}100%{transform:none}}
 
-  /* side panel */
-  .side{display:flex;flex-direction:column;gap:12px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:12px}
-  .card h3{font-size:11px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:9px;border-bottom:1px solid var(--line);padding-bottom:6px}
-  .row{display:flex;justify-content:space-between;align-items:center;margin:5px 0;font-size:13px}
-  .row .k{color:var(--ink-dim)} .row .v{color:var(--cream);font-variant-numeric:tabular-nums}
-  .row .v.good{color:var(--green)} .row .v.bad{color:var(--red)} .row .v.gold{color:var(--gold)}
+  .help{font-size:10.5px;color:var(--dim);margin-top:12px;text-align:center;line-height:1.7;position:relative;z-index:3}
+  .howto{cursor:pointer;color:var(--brass);border-bottom:1px dotted var(--brassline)}
+  .howto:hover{color:var(--brass-hi)}
 
-  /* credit meter */
-  .credit .meter{height:12px;background:#0c1512;border-radius:7px;overflow:hidden;border:1px solid var(--line);margin:4px 0 6px}
-  .credit .meter i{display:block;height:100%;transition:width .35s,background .35s}
-  .credit .state{display:inline-block;font-size:10px;letter-spacing:.14em;padding:2px 8px;border-radius:10px;font-weight:600}
-  .credit .note{font-size:11px;color:var(--ink-dim);margin-top:7px;line-height:1.4}
+  /* ---------- side cards ---------- */
+  .side{display:flex;flex-direction:column;gap:14px}
+  .card{position:relative;background:linear-gradient(180deg,#1d1810,var(--panel));border-radius:5px;padding:13px 14px;
+    box-shadow:inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(232,132,60,.05), 0 8px 22px rgba(0,0,0,.4)}
+  .card h3{font-family:var(--serif);font-variant:small-caps;letter-spacing:.18em;font-size:14px;color:var(--brass);
+    margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid var(--brassline);font-weight:600}
+  .ledger.card{background:linear-gradient(180deg,#1d1810,var(--panel)),radial-gradient(120px 80px at 80% 0,rgba(78,124,107,.10),transparent)}
+  .lrow{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:6px 0;font-size:13px;position:relative}
+  .lrow .lk{color:var(--dim);font-size:11.5px;letter-spacing:.04em;white-space:nowrap}
+  .lrow .lk::after{content:"";position:absolute}
+  .lrow .lv{color:var(--ink);font-variant-numeric:tabular-nums;font-weight:500}
+  .lrow .lv.brass{color:var(--brass)} .lrow .lv.debt{color:var(--vane-cold)} .lrow .lv.good{color:var(--good)}
+  .lrow.net{border-top:1px solid var(--brassline);margin-top:8px;padding-top:8px}
+  .lrow.net .lk{color:var(--ink)} .lrow.net .lv{font-size:17px;color:var(--marble)}
+  .delta{font-size:10px;margin-left:5px}
+  .delta.up{color:var(--good)} .delta.down{color:var(--vane-cold)}
+
+  /* credit gauge */
+  .gauge{position:relative;height:16px;border-radius:3px;margin:4px 0 10px;overflow:hidden;
+    box-shadow:inset 0 2px 5px rgba(4,3,2,.7), inset 0 0 0 1px var(--line);
+    background:linear-gradient(90deg,var(--good) 0%,var(--good) 45%,var(--brass) 62%,var(--brass) 80%,var(--oxblood) 92%,var(--bad) 100%)}
+  .gauge .gn{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--ink);box-shadow:0 0 6px rgba(0,0,0,.8);transition:left .5s cubic-bezier(.22,1,.36,1)}
+  .gauge .gn::before{content:"";position:absolute;top:-3px;left:-3px;width:8px;height:7px;background:var(--ink);clip-path:polygon(50% 100%,0 0,100% 0)}
+  .gauge .glim{position:absolute;right:8%;top:0;bottom:0;width:1px;background:rgba(237,230,214,.4)}
+  .gtick{position:absolute;top:0;bottom:0;width:1px;background:rgba(0,0,0,.35)}
+  .credit.frothy .gauge{box-shadow:inset 0 2px 5px rgba(4,3,2,.7), inset 0 0 0 1px var(--warn), 0 0 12px rgba(201,162,75,.2);animation:breathe 2.4s ease-in-out infinite}
+  .credit.crunch .gauge{box-shadow:inset 0 2px 5px rgba(4,3,2,.7), inset 0 0 0 1px var(--bad), 0 0 16px rgba(155,45,47,.4);animation:breathe 1s ease-in-out infinite}
+  @keyframes breathe{0%,100%{filter:brightness(1)}50%{filter:brightness(1.22)}}
+  .cmed{display:inline-block;font-family:var(--serif);font-variant:small-caps;font-size:12px;letter-spacing:.18em;
+    padding:2px 12px;border-radius:11px;border:1px solid currentColor}
+  .cnote{font-family:var(--serif);font-style:italic;font-size:13px;color:var(--dim);margin-top:9px;line-height:1.45}
 
   /* buttons */
-  .btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-  button{font-family:inherit;font-size:12px;color:var(--ink);background:var(--panel2);border:1px solid var(--line);
-    border-radius:6px;padding:7px 10px;cursor:pointer;transition:.1s}
-  button:hover:not(:disabled){border-color:var(--gold-dim);color:var(--cream)}
-  button:disabled{opacity:.34;cursor:not-allowed}
-  button.gold{background:linear-gradient(180deg,#d9b65f,#b8993f);border:none}
-  .endweek{width:100%;padding:13px;font-size:15px;letter-spacing:.14em;color:#1a130a;font-weight:700;
-    background:linear-gradient(180deg,var(--gold),#b8983c);border:none;border-radius:8px;cursor:pointer;
-    text-transform:uppercase;font-family:Georgia,serif}
-  .endweek:hover{filter:brightness(1.07)}
+  .btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+  button{font-family:var(--mono);font-size:11.5px;letter-spacing:.04em;color:var(--ink);background:transparent;
+    border:1px solid var(--brassline);border-radius:3px;padding:8px 10px;cursor:pointer;transition:.14s;position:relative;overflow:hidden}
+  button:hover:not(:disabled){border-color:var(--brass);color:var(--brass-hi)}
+  button:disabled{opacity:.32;cursor:not-allowed}
+  button.ember{background:linear-gradient(180deg,#a85a26,#7a3f18);border-color:#c2702f;color:#fdeede;font-weight:500}
+  button.ember:hover:not(:disabled){background:linear-gradient(180deg,#c2702f,#8a4a1c);color:#fff}
+  button.ember::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 40%,rgba(255,255,255,.25),transparent 60%);transform:translateX(-120%)}
+  button.ember:hover::after{transform:translateX(120%);transition:transform .6s ease}
+  .endweek{width:100%;padding:15px;margin-top:2px;font-family:var(--serif);font-variant:small-caps;font-size:18px;letter-spacing:.14em;
+    color:#1a120a;font-weight:600;border:none;border-radius:4px;cursor:pointer;
+    background:linear-gradient(180deg,var(--brass-hi),var(--brass) 55%,#9a7a30);box-shadow:0 4px 14px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.4)}
+  .endweek:hover{filter:brightness(1.06)} .endweek:active{transform:translateY(1px)}
 
-  /* buy options */
-  .buyopt{display:flex;align-items:center;gap:9px;padding:8px;border:1px solid var(--line);border-radius:7px;margin:6px 0;cursor:pointer;transition:.1s}
-  .buyopt:hover:not(.dis){border-color:var(--gold-dim);background:var(--panel2)}
-  .buyopt.dis{opacity:.4;cursor:not-allowed}
-  .buyopt .bic{font-size:20px;width:26px;text-align:center}
-  .buyopt .bmid{flex:1}
-  .buyopt .bn{font-size:13px;color:var(--cream)}
-  .buyopt .bd{font-size:10.5px;color:var(--ink-dim)}
-  .buyopt .bright{text-align:right}
-  .buyopt .bcost{font-size:12px}
-  .buyopt .binc{font-size:10.5px;color:var(--green)}
+  /* deed / detail */
+  .deed .portrait{height:96px;display:flex;align-items:flex-end;justify-content:center;margin:-2px 0 8px;
+    background:radial-gradient(80px 50px at 50% 90%,rgba(232,132,60,.12),transparent);border-bottom:1px solid var(--brassline)}
+  .deed .portrait svg{height:100%;width:auto}
+  .pl .ln{display:flex;justify-content:space-between;gap:8px;margin:5px 0;font-size:12px;color:var(--dim)}
+  .pl .ln b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums}
+  .pl .net{border-top:1px solid var(--brassline);margin-top:7px;padding-top:7px;font-size:14px}
+  .pl .net b{color:var(--good)}
+  .muted{color:var(--dim);font-size:12px;line-height:1.6;font-family:var(--serif);font-style:italic}
+  .deedstamp{font-family:var(--serif);font-style:italic;color:var(--vane-cold);border:1px solid var(--oxblood);
+    transform:rotate(-4deg);display:inline-block;padding:3px 10px;letter-spacing:.08em;margin:6px 0;opacity:.85}
+  .acq{display:flex;align-items:center;gap:9px;padding:8px 9px;border:1px solid var(--line);border-radius:4px;margin:6px 0;cursor:pointer;transition:.14s;position:relative}
+  .acq:hover:not(.dis){border-color:var(--brass);background:rgba(201,162,75,.06)}
+  .acq.dis{opacity:.4;cursor:not-allowed}
+  .acq.prime{border-color:var(--brass)}
+  .acq .ag{flex:0 0 30px;height:34px}
+  .acq .am{flex:1}
+  .acq .an{font-family:var(--serif);font-size:14px;color:var(--marble);font-variant:small-caps;letter-spacing:.05em}
+  .acq .ad{font-size:9.5px;color:var(--dim)}
+  .acq .ar{text-align:right}
+  .acq .ac{font-size:12px;font-variant-numeric:tabular-nums}
+  .acq .ai{font-size:10px;color:var(--good)}
+  .acq .ribbon{position:absolute;top:-7px;right:8px;font-family:var(--serif);font-variant:small-caps;font-size:9px;letter-spacing:.1em;color:#1a120a;background:var(--brass);padding:1px 7px;border-radius:7px}
 
-  .pl{font-size:12.5px}
-  .pl .ln{display:flex;justify-content:space-between;margin:4px 0;color:var(--ink-dim)}
-  .pl .ln b{color:var(--cream);font-weight:500}
-  .pl .net{border-top:1px solid var(--line);margin-top:6px;padding-top:6px;color:var(--green);font-size:14px}
+  .log{font-size:11px;color:var(--dim);line-height:1.7;max-height:130px;overflow:auto}
+  .log .ev{color:var(--ember)} .log .gd{color:var(--good)} .log .bd{color:var(--vane-cold)}
+  .log .wk{color:var(--brass)}
 
-  .log{font-size:11.5px;color:var(--ink-dim);line-height:1.5;max-height:120px;overflow:auto}
-  .log .ev{color:var(--amber)} .log .gd{color:var(--green)} .log .bd{color:var(--red)}
+  /* toast */
+  .toast{font-size:12px;color:var(--ink);margin-bottom:14px;line-height:1.6;padding:10px 14px;border-radius:4px;
+    background:linear-gradient(180deg,#221b13,#1a140d);box-shadow:inset 0 0 0 1px var(--brassline);border-left:3px solid var(--brass);
+    animation:toastin .4s ease-out}
+  @keyframes toastin{0%{opacity:0;transform:translateY(-6px)}100%{opacity:1;transform:none}}
+  .toast .ev{color:var(--ember)} .toast .bd{color:var(--vane-cold)} .toast .gd{color:var(--good)} .toast .wk{color:var(--brass);font-family:var(--serif);font-variant:small-caps;letter-spacing:.06em}
 
-  .muted{color:var(--ink-dim);font-size:11.5px;line-height:1.5}
-  .help{font-size:11px;color:var(--ink-dim);margin-top:10px;text-align:center;line-height:1.6}
-
-  /* overlay */
-  .overlay{position:fixed;inset:0;background:rgba(6,11,9,.92);display:flex;align-items:center;justify-content:center;z-index:50}
-  .overlay .box{background:var(--panel);border:2px solid var(--gold);border-radius:12px;padding:32px 40px;text-align:center;max-width:440px}
-  .overlay h2{font-size:26px;color:var(--gold);letter-spacing:.1em;margin-bottom:10px}
-  .overlay p{color:var(--ink);font-size:14px;line-height:1.6;margin:6px 0}
-  .overlay .big{font-size:15px;color:var(--cream);margin:14px 0}
+  /* overlays */
+  .overlay{position:fixed;inset:0;background:var(--scrim);display:flex;align-items:center;justify-content:center;z-index:80;backdrop-filter:blur(2px)}
+  .overlay .box{position:relative;background:linear-gradient(180deg,#1d1812,#14110b);border-radius:6px;padding:34px 42px;text-align:center;max-width:560px;
+    box-shadow:0 0 0 1px var(--brass), 0 0 0 6px rgba(11,10,13,.6), 0 0 0 7px var(--brassline), 0 30px 80px rgba(0,0,0,.7)}
+  .overlay h2{font-family:var(--serif);font-size:34px;letter-spacing:.06em;margin:0 0 12px;font-weight:600}
+  .overlay p{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--ink);line-height:1.6;margin:8px 0}
+  .overlay .big{font-size:15px;color:var(--marble);margin:16px 0 6px;font-variant-numeric:tabular-nums}
+  .overlay .sub{font-family:var(--serif);font-variant:small-caps;letter-spacing:.28em;font-size:12px;color:var(--dim);margin-bottom:18px}
   .hidden{display:none}
+  .rule{display:flex;gap:13px;align-items:flex-start;margin:13px 0;font-size:13px;line-height:1.55;color:var(--ink);text-align:left;font-family:var(--mono)}
+  .rule .ri{flex:0 0 26px;height:26px}
+  .rule b{color:var(--brass-hi);font-weight:500}
+  .startbtn{font-family:var(--serif);font-variant:small-caps;font-size:18px;letter-spacing:.1em;color:#1a120a;font-weight:600;
+    border:none;border-radius:4px;padding:12px 34px;margin-top:20px;cursor:pointer;
+    background:linear-gradient(180deg,var(--brass-hi),var(--brass) 55%,#9a7a30);box-shadow:0 4px 14px rgba(0,0,0,.5)}
+  .startbtn:hover{filter:brightness(1.06)}
 
-  .rule{display:flex;gap:12px;align-items:flex-start;margin:11px 0;font-size:13px;line-height:1.5;color:var(--ink)}
-  .rule .ri{font-size:20px;line-height:1.2;flex-shrink:0}
-  .rule b{color:var(--cream)}
-  .buyopt.best{border-color:var(--gold);box-shadow:inset 0 0 0 1px rgba(217,182,95,.3)}
-  .buyopt.best .bn:after{content:' ★ best';color:var(--gold);font-size:10px;letter-spacing:.06em}
-  .howto{cursor:pointer;color:var(--gold-dim);text-decoration:underline;text-underline-offset:2px}
-  .howto:hover{color:var(--gold)}
-
-  /* report toast */
-  .toast{background:var(--panel2);border:1px solid var(--gold-dim);border-left:3px solid var(--gold);
-    border-radius:7px;padding:9px 12px;font-size:12px;color:var(--ink);margin-bottom:12px;line-height:1.5}
-  .toast .ev{color:var(--amber)} .toast .bd{color:var(--red)} .toast .gd{color:var(--green)}
+  /* crunch / fx */
+  body.crunching{animation:shake .45s cubic-bezier(.36,.07,.19,.97)}
+  @keyframes shake{10%,90%{transform:translateX(-2px)}30%,70%{transform:translateX(3px)}50%{transform:translateX(-3px)}}
+  .crunchflash{position:fixed;inset:0;pointer-events:none;z-index:75;background:radial-gradient(circle at 50% 50%,transparent 40%,rgba(122,30,34,.5));opacity:0;animation:cflash .7s ease-out}
+  @keyframes cflash{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
+  .crunchstamp{position:fixed;top:38%;left:50%;transform:translate(-50%,-50%) rotate(-7deg);z-index:76;
+    font-family:var(--serif);font-size:64px;letter-spacing:.1em;color:var(--vane-cold);
+    border:4px solid var(--oxblood);padding:6px 28px;background:rgba(20,10,12,.5);opacity:0;animation:stamp .9s ease-out}
+  @keyframes stamp{0%{opacity:0;transform:translate(-50%,-50%) rotate(-7deg) scale(1.6)}20%{opacity:1;transform:translate(-50%,-50%) rotate(-7deg) scale(1)}80%{opacity:1}100%{opacity:0}}
+  .confetti{position:absolute;top:-12px;width:7px;height:10px;opacity:.95;animation:fall linear forwards}
+  @keyframes fall{0%{transform:translateY(-20px) rotate(0)}100%{transform:translateY(640px) rotate(540deg);opacity:.3}}
 </style>
 </head>
 <body>
+<!-- shared SVG defs (gradients referenced by every building tile) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="wallYou" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#312416"/><stop offset="1" stop-color="#17110a"/></linearGradient>
+  <linearGradient id="wallVane" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#291519"/><stop offset="1" stop-color="#150c0f"/></linearGradient>
+  <linearGradient id="emberWin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB066"/><stop offset="1" stop-color="#E8843C"/></linearGradient>
+  <linearGradient id="brassGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E6C878"/><stop offset="0.5" stop-color="#C9A24B"/><stop offset="1" stop-color="#7d5d1e"/></linearGradient>
+</defs></svg>
+
 <div class="wrap">
-  <header>
-    <div class="title">
+  <header class="masthead">
+    <svg class="mh-orn" viewBox="0 0 70 46"><g fill="none" stroke="#5A4A2A" stroke-width="1.4"><path d="M68 23 H30 M30 23 l-7 -7 M30 23 l-7 7"/><path d="M60 14 v18 M52 17 v12 M44 20 v6"/></g></svg>
+    <div class="mh-mid">
       <h1>Empire on Borrowed Money</h1>
       <div class="sub">Lower East Side &middot; 1924</div>
     </div>
-    <div class="weekbox">
-      <div class="w"><span id="wk">1</span><span style="color:var(--ink-dim);font-size:16px">/24</span></div>
-      <div class="l">THE WEEK</div>
+    <div class="mh-right">
+      <div class="weekseal">
+        <svg viewBox="0 0 62 62"><circle cx="31" cy="31" r="28" fill="none" stroke="#5A4A2A" stroke-width="1.5"/><circle cx="31" cy="31" r="23" fill="none" stroke="#3A3142" stroke-width="1"/><circle id="wkrim" cx="31" cy="31" r="28" fill="none" stroke="#C9A24B" stroke-width="2" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="176" transform="rotate(-90 31 31)"/></svg>
+        <div class="rn" id="wk">I</div>
+        <div class="wl">week &middot; xxiv</div>
+      </div>
+      <button class="muteb" id="muteb" onclick="toggleMute()" title="Sound">♪</button>
     </div>
   </header>
+  <div class="deco-rule"></div>
 
   <div class="race">
-    <div class="lab"><span class="you">YOU &mdash; <b id="ynw">$0</b></span><span class="vane"><b id="vnw">$0</b> &mdash; CORNELIUS VANE</span></div>
-    <div class="track"><div class="fill" id="rfill" style="width:50%"></div><div class="vmark" id="rvane" style="left:50%"></div></div>
-    <div class="hint" id="rhint">Out-build Vane's net worth by Week 24.</div>
+    <div class="cameo you" id="cameoYou"><svg viewBox="0 0 46 46"><rect width="46" height="46" fill="#1a140d"/><g fill="none" stroke="#C9A24B" stroke-width="1.4"><path d="M14 30 q9 -10 18 0"/><circle cx="23" cy="18" r="5"/><path d="M15 14 h16 M18 14 v-4 h10 v4"/></g></svg></div>
+    <div class="race-mid">
+      <div class="race-lab"><span class="ry">YOU &middot; <b id="ynw">$0</b></span><span class="rv"><b id="vnw">$0</b> &middot; CORNELIUS T. VANE</span></div>
+      <div class="racetrack"><div class="rfy" id="raceYou" style="width:50%"></div><div class="rfv" id="raceVane" style="width:50%"></div><div class="seam" id="raceSeam" style="left:50%"></div></div>
+      <div class="race-hint" id="rhint">Out-build Vane's fortune by Week XXIV.</div>
+    </div>
+    <div class="cameo vane" id="cameoVane"><svg viewBox="0 0 46 46"><rect width="46" height="46" fill="#160c0f"/><g fill="none" stroke="#B5474A" stroke-width="1.4"><path d="M14 31 q9 -9 18 0"/><path d="M18 18 l5 -6 5 6 a5 5 0 0 1 -10 0"/><path d="M15 14 h16"/></g></svg></div>
   </div>
 
   <div id="toast" class="toast hidden"></div>
 
   <div class="main">
     <div class="city">
+      <div class="cityplate">A Register of Holdings &middot; MCMXXIV</div>
       <div class="districts" id="districts"></div>
-      <div class="help">Click a vacant lot to build &middot; click your shops to manage them &middot; <span class="howto" onclick="showIntro()">ⓘ How to play</span></div>
-      <div class="help" style="opacity:.5;font-size:10px;margin-top:2px">This prototype records anonymous gameplay stats (no personal data) to help balance it.</div>
+      <div class="help"><span class="howto" onclick="showIntro()">ⓘ How to play</span> &nbsp;·&nbsp; click a vacant lot to build, your shops to manage them
+        <div style="opacity:.55;margin-top:3px">anonymous gameplay stats are recorded to balance this prototype</div></div>
     </div>
 
     <div class="side">
-      <div class="card">
-        <h3>Treasury</h3>
-        <div class="row"><span class="k">Cash on hand</span><span class="v gold" id="cash">$0</span></div>
-        <div class="row"><span class="k">Debt</span><span class="v" id="debt">$0</span></div>
-        <div class="row"><span class="k">Weekly income</span><span class="v good" id="winc">$0</span></div>
-        <div class="row"><span class="k">Net worth</span><span class="v" id="nw">$0</span></div>
+      <div class="card ledger">
+        <h3>The Ledger</h3>
+        <div class="lrow"><span class="lk">Cash on hand</span><span class="lv brass" id="cash">$0</span></div>
+        <div class="lrow"><span class="lk">Debt owed</span><span class="lv debt" id="debt">$0</span></div>
+        <div class="lrow"><span class="lk">Income / wk</span><span class="lv good" id="winc">$0</span></div>
+        <div class="lrow net"><span class="lk">Net worth</span><span class="lv" id="nw">$0<span class="delta" id="nwd"></span></span></div>
         <div class="btns">
-          <button id="b250" onclick="doBorrow(300)">Borrow $300</button>
+          <button class="ember" id="b250" onclick="doBorrow(300)">Borrow $300</button>
           <button id="bmax" onclick="doBorrowMax()">Borrow Max</button>
           <button id="rep" onclick="doRepay()">Repay All</button>
         </div>
       </div>
 
-      <div class="card credit">
+      <div class="card credit" id="creditCard">
         <h3>Credit Market</h3>
-        <div class="meter"><i id="froth" style="width:45%"></i></div>
-        <span class="state" id="cstate">STEADY</span>
-        <div class="row" style="margin-top:8px"><span class="k">Interest / wk</span><span class="v" id="irate">2%</span></div>
-        <div class="row"><span class="k">Borrowing power</span><span class="v" id="bcap">$0</span></div>
-        <div class="note" id="cnote"></div>
+        <div class="gauge"><span class="gtick" style="left:62%"></span><span class="gtick" style="left:80%"></span><span class="glim"></span><span class="gn" id="gNeedle" style="left:45%"></span></div>
+        <div style="text-align:center;margin:2px 0 4px"><span class="cmed" id="cstate">STEADY</span></div>
+        <div class="lrow"><span class="lk">Interest / wk</span><span class="lv" id="irate">2%</span></div>
+        <div class="lrow"><span class="lk">Borrowing power</span><span class="lv" id="bcap">$0</span></div>
+        <div class="cnote" id="cnote"></div>
       </div>
 
-      <div class="card" id="detail">
+      <div class="card deed" id="detail">
         <h3>The City</h3>
         <div class="muted">Select a lot to inspect it.</div>
       </div>
 
       <div class="card">
-        <h3>Ledger</h3>
+        <h3>The Journal</h3>
         <div class="log" id="log"></div>
       </div>
 
-      <button class="endweek" onclick="doEndWeek()">End Week &raquo;</button>
+      <button class="endweek" onclick="doEndWeek()">End the Week</button>
     </div>
   </div>
 </div>
 
 <div class="overlay hidden" id="overlay"><div class="box">
-  <h2 id="ovh">—</h2>
-  <p id="ovp">—</p>
-  <div class="big" id="ovb">—</div>
-  <button class="endweek" style="width:auto;padding:11px 26px" onclick="restart()">Play Again</button>
+  <h2 id="ovh">&mdash;</h2>
+  <div class="sub" id="ovsub">&mdash;</div>
+  <p id="ovp">&mdash;</p>
+  <div class="big" id="ovb">&mdash;</div>
+  <button class="startbtn" onclick="restart()">Run It Back</button>
 </div></div>
 
-<div class="overlay hidden" id="intro"><div class="box" style="max-width:540px;text-align:left">
-  <h2 style="text-align:center">Empire on Borrowed Money</h2>
-  <p style="text-align:center;color:var(--ink-dim);margin:0 0 16px">Lower East Side, 1924. You have 24 weeks to build a bigger fortune than the financier Cornelius Vane. Here's how the money works:</p>
-  <div class="rule"><span class="ri">🎯</span><div><b>Win the race.</b> End Week 24 with a higher <b>net worth</b> than Vane — the bar at the top. You start behind.</div></div>
-  <div class="rule"><span class="ri">🤝</span><div><b>Mix your blocks.</b> A shop earns <b>+25% for each <i>different</i> shop you own next to it</b> (up to +50%). Two of the same type next to each other? No bonus. Build variety.</div></div>
-  <div class="rule"><span class="ri">🏙️</span><div><b>Don't flood a district.</b> Each neighborhood has limited customers. Cram too many shops into one and they <b>all earn less</b>. Spread across districts.</div></div>
-  <div class="rule"><span class="ri">💰</span><div><b>Borrow to grow.</b> Cash alone is too slow — Vane will grab the best lots first. Leverage up while credit is calm. But watch the <b>Credit Market</b>: when froth runs red a <b>crunch</b> hits, and if you're over-extended it'll seize your shops. Keep a buffer.</div></div>
-  <button class="endweek" style="width:auto;padding:11px 30px;display:block;margin:18px auto 0" onclick="hideIntro()">Take the City &raquo;</button>
+<div class="overlay hidden" id="intro"><div class="box" style="max-width:560px">
+  <h2 style="color:var(--brass)">Empire on Borrowed Money</h2>
+  <div class="sub">Lower East Side &middot; 1924</div>
+  <p style="margin:0 0 14px;color:var(--dim)">Twenty-four weeks to build a bigger fortune than the financier Cornelius Vane. Here is how the money works:</p>
+  <div class="rule"><svg class="ri" viewBox="0 0 26 26" fill="none" stroke="#C9A24B" stroke-width="1.5"><circle cx="13" cy="13" r="9"/><circle cx="13" cy="13" r="3.5"/></svg><div><b>Win the race.</b> End Week XXIV with a higher <b>net worth</b> than Vane &mdash; the bar up top. You start behind.</div></div>
+  <div class="rule"><svg class="ri" viewBox="0 0 26 26" fill="none" stroke="#C9A24B" stroke-width="1.5"><rect x="4" y="9" width="7" height="10"/><rect x="15" y="6" width="7" height="13"/></svg><div><b>Mix your blocks.</b> A shop earns <b>+25% for each <i>different</i> shop you own beside it</b> (up to +50%). Two of the same kind side by side? Nothing. Build variety.</div></div>
+  <div class="rule"><svg class="ri" viewBox="0 0 26 26" fill="none" stroke="#C9A24B" stroke-width="1.5"><path d="M3 20 h20 M6 20 v-9 M12 20 v-13 M18 20 v-7"/></svg><div><b>Don't flood a district.</b> Each neighborhood has limited customers, shared with Vane. Cram too many shops in one and they <b>all earn less</b>. Spread out.</div></div>
+  <div class="rule"><svg class="ri" viewBox="0 0 26 26" fill="none" stroke="#E8843C" stroke-width="1.5"><path d="M13 4 v18 M7 9 h9 a3 3 0 0 1 0 6 h-6 a3 3 0 0 0 0 6 h9"/></svg><div><b>Borrow to grow.</b> Cash alone is too slow &mdash; Vane grabs the best lots first. Lever up while credit is calm. But watch the <b>Credit Market</b> gauge: when it runs red a <b>crunch</b> hits, and the bank forecloses your weakest shops. Keep a buffer.</div></div>
+  <button class="startbtn" onclick="hideIntro()">Take the City</button>
 </div></div>
 
 <script>
@@ -649,15 +773,19 @@
 </script>
 <script>
 'use strict';
-var ICON={cafe:'☕',grocer:'🍎',apoth:'⚗️',theater:'🎭'};
-var DNAME=['Tenement Row','Garment Square','Dock Quarter','Bowery Bend'];
-var S, sel=null;
+var DNAME=['Tenement Row','Garment Square','Dock Quarter','Financial Row'];
+var DWARD=[
+  '<svg class="dward" viewBox="0 0 17 17" fill="none" stroke="#C9A24B" stroke-width="1.2"><rect x="3" y="2" width="4" height="13"/><rect x="10" y="5" width="4" height="10"/></svg>',
+  '<svg class="dward" viewBox="0 0 17 17" fill="none" stroke="#C9A24B" stroke-width="1.2"><path d="M8.5 3 v11 M5 6 a3.5 3.5 0 0 0 7 0"/><circle cx="8.5" cy="3" r="1"/></svg>',
+  '<svg class="dward" viewBox="0 0 17 17" fill="none" stroke="#C9A24B" stroke-width="1.2"><path d="M8.5 3 v10 M4 8 a4.5 4.5 0 0 0 9 0 M5 5 h7"/><circle cx="8.5" cy="3" r="1"/></svg>',
+  '<svg class="dward" viewBox="0 0 17 17" fill="none" stroke="#C9A24B" stroke-width="1.2"><path d="M3 7 l5.5 -4 5.5 4 z M4 7 v6 M8.5 7 v6 M13 7 v6 M3 14 h11"/></svg>'
+];
+var TYPEMETA={cafe:{c:'#E08A3C',w:54},grocer:{c:'#5FA86B',w:70},apoth:{c:'#5E8FBE',w:50},theater:{c:'#A85BC0',w:76}};
+var S, sel=null, justBuilt=null;
 
-/* ---- anonymous play telemetry (no personal data; just how the game is played) ----
-   Pick a backend by setting TELEMETRY.mode + key/endpoint below. 'console' just logs
-   locally so the game works standalone. Events flush in batches and on page-hide. */
+/* ---- anonymous play telemetry (no personal data) ---- */
 var TELEMETRY = {
-  mode: 'endpoint',                // 'console' | 'posthog' | 'endpoint'
+  mode: 'endpoint',
   posthogKey: '', posthogHost: 'https://us.i.posthog.com',
   endpoint: 'https://script.google.com/macros/s/AKfycbzsSlTIsBlWgXyD98ZmQpd1Nvk0gemqK7AL6EV6_NdlhqyWHFDj9nsCBYPi4w6kza9x/exec'
 };
@@ -693,120 +821,239 @@ if(typeof window!=='undefined'){
 function snapshot(){ return { week:S.week, cash:Math.round(S.cash), debt:Math.round(S.debt),
   nw:EOB.netWorth(S), vane:EOB.vaneNetWorth(S), froth:Math.round(S.froth), crunch:S.crunch>0, owned:EOB.ownedLots(S).length }; }
 
+/* ---- sound: Web Audio synthesis (no files). Lazy-init on first gesture. ---- */
+var AC=null, MASTER=null, MUTED=false, HUM=null;
+try{ MUTED = localStorage.getItem('eob_muted')==='1'; }catch(e){}
+function audioInit(){
+  if(AC) { if(AC.state==='suspended') AC.resume(); return; }
+  try{ AC=new (window.AudioContext||window.webkitAudioContext)(); MASTER=AC.createGain(); MASTER.gain.value=MUTED?0:0.5; MASTER.connect(AC.destination); }catch(e){ AC=null; }
+}
+function osc(freq,type,t0,dur,peak,atk,slideTo){
+  if(!AC)return; var o=AC.createOscillator(); o.type=type||'sine'; o.frequency.setValueAtTime(freq,t0);
+  if(slideTo) o.frequency.exponentialRampToValueAtTime(slideTo,t0+dur);
+  var g=AC.createGain(); g.connect(MASTER); peak=peak==null?0.3:peak; atk=atk==null?0.006:atk;
+  g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(peak,t0+atk); g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  o.connect(g); o.start(t0); o.stop(t0+dur+0.02);
+}
+function noise(t0,dur,peak,type,freq){
+  if(!AC)return; var n=Math.floor(AC.sampleRate*dur), buf=AC.createBuffer(1,n,AC.sampleRate), d=buf.getChannelData(0);
+  for(var i=0;i<n;i++) d[i]=Math.random()*2-1;
+  var src=AC.createBufferSource(); src.buffer=buf; var f=AC.createBiquadFilter(); f.type=type||'lowpass'; f.frequency.value=freq||1500;
+  var g=AC.createGain(); g.connect(MASTER); g.gain.setValueAtTime(peak||0.15,t0); g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+  src.connect(f); f.connect(g); src.start(t0); src.stop(t0+dur);
+}
+function sfx(name){
+  audioInit(); if(!AC||MUTED) return; var t=AC.currentTime;
+  switch(name){
+    case 'click': osc(380,'triangle',t,0.05,0.08,0.002); break;
+    case 'select': osc(520,'sine',t,0.05,0.07,0.002); break;
+    case 'build':
+      osc(90,'sine',t,0.12,0.5,0.004,55); noise(t,0.09,0.06,'highpass',6000);
+      [784,988,1175].forEach(function(f,i){ osc(f,'triangle',t+i*0.07,0.2,0.16,0.008); }); break;
+    case 'borrow': osc(150,'sawtooth',t,0.2,0.18,0.01,110); osc(300,'triangle',t,0.18,0.1,0.01,240); break;
+    case 'repay': [392,523].forEach(function(f,i){ osc(f,'sine',t+i*0.05,0.22,0.12,0.006); }); break;
+    case 'week':
+      osc(130,'sine',t,0.9,0.32,0.006); osc(131.5,'sine',t,0.9,0.18,0.006); break;
+    case 'cashcascade': break;
+    case 'crunch':
+      noise(t,0.18,0.35,'highpass',3000); osc(55,'sawtooth',t,0.4,0.32,0.004,44); osc(58.3,'sawtooth',t,0.4,0.22,0.004,46);
+      osc(55,'sawtooth',t+0.05,1.0,0.18,0.02); break;
+    case 'foreclose':
+      osc(120,'square',t,0.1,0.28,0.004); osc(120,'square',t+0.09,0.1,0.24,0.004); noise(t,0.07,0.18,'lowpass',300);
+      osc(330,'triangle',t,0.4,0.16,0.01); osc(349,'triangle',t,0.4,0.16,0.01); break;
+    case 'lapse': osc(300,'sine',t,0.3,0.1,0.01,180); break;
+    case 'win':
+      [261,329,392,523].forEach(function(f,i){ osc(f,'sine',t+i*0.1,2.0,0.18,0.04); osc(f,'triangle',t+i*0.1,2.0,0.08,0.04); });
+      osc(1046,'triangle',t+0.5,1.2,0.14,0.01); noise(t+0.45,0.7,0.08,'highpass',5000); break;
+    case 'lose':
+      [0,1,2,3,4].forEach(function(i){ noise(t+i*0.08,0.12,0.08,'lowpass',1500-i*300); });
+      osc(110,'sine',t+0.7,2.4,0.2,0.03); osc(110.5,'sine',t+0.7,2.4,0.1,0.03); break;
+  }
+}
+function cashCascade(profit){
+  audioInit(); if(!AC||MUTED) return; var t=AC.currentTime;
+  var notes=[1047,1318,1568], n=Math.max(2,Math.min(7,Math.round(profit/250)));
+  for(var i=0;i<n;i++){ var f=notes[i%3]+(Math.random()*30-15); osc(f,'sine',t+0.1+i*0.05,0.12,0.07,0.008); }
+}
+function toggleMute(){
+  MUTED=!MUTED; try{ localStorage.setItem('eob_muted',MUTED?'1':'0'); }catch(e){}
+  audioInit(); if(MASTER) MASTER.gain.value=MUTED?0:0.5;
+  var b=el('muteb'); if(b){ b.textContent=MUTED?'⊘':'♪'; b.style.color=MUTED?'var(--dim)':''; }
+  if(!MUTED) sfx('select');
+}
+window.toggleMute=toggleMute;
+
 function fmt(n){n=Math.round(n);var neg=n<0;n=Math.abs(n);var s=String(n),out='';while(s.length>3){out=','+s.slice(-3)+out;s=s.slice(0,-3);}return (neg?'-$':'$')+s+out;}
 function el(id){return document.getElementById(id);}
+function ROMAN(n){var m=[['M',1000],['CM',900],['D',500],['CD',400],['C',100],['XC',90],['L',50],['XL',40],['X',10],['IX',9],['V',5],['IV',4],['I',1]],r='';for(var i=0;i<m.length;i++){while(n>=m[i][1]){r+=m[i][0];n-=m[i][1];}}return r||'I';}
 
-// preview: marginal weekly income if `type` were built on `lotId`
-function evalPlace(lotId,type){
-  var before=EOB.weeklyIncome(S,false);
-  S.lots[lotId].biz={type:type,owner:'you',tier:1,lease:EOB.CFG.leaseLen,ramp:0};
-  var after=EOB.weeklyIncome(S,false);
-  S.lots[lotId].biz=null;
-  return after-before;
-}
-function diffNeighbors(lotId){
-  var b=S.lots[lotId].biz,nb=EOB.neighborsOf(lotId),d=0;
-  for(var i=0;i<nb.length;i++){var n=S.lots[nb[i]].biz;if(n&&n.owner==='you'&&n.type!==b.type)d++;}
-  return Math.min(EOB.CFG.synergyMaxNbr,d);
+/* number roll-up */
+var _prev={};
+function roll(id,to,fn){ var e=el(id); if(!e)return; var from=_prev[id]==null?to:_prev[id]; _prev[id]=to;
+  if(from===to){ e.firstChild?e.firstChild.nodeValue=fn(to):e.textContent=fn(to); return; }
+  var t0=performance.now();
+  function step(t){ var k=Math.min(1,(t-t0)/500); k=1-Math.pow(1-k,3); var v=Math.round(from+(to-from)*k);
+    if(e.firstChild&&e.firstChild.nodeType===3) e.firstChild.nodeValue=fn(v); else e.textContent=fn(v);
+    if(k<1) requestAnimationFrame(step); }
+  requestAnimationFrame(step);
 }
 
-function start(seed){ S=EOB.newGame(seed); sel=null; _gameNo++; el('overlay').className='overlay hidden'; el('toast').className='toast hidden'; track('game_start',{seed:seed}); render(); }
-function restart(){ start((Math.floor(performance.now())%100000)+1); }
+/* ---- the building (parametric Art-Deco storefront SVG) ---- */
+function awning(x,y,w,color){
+  var n=Math.max(4,Math.round(w/8)),seg=w/n,p='M'+x+' '+y+' L'+(x+w)+' '+y+' L'+(x+w)+' '+(y+4);
+  for(var i=n;i>0;i--){ var sx=x+seg*i; p+=' Q '+(sx-seg/2)+' '+(y+8.5)+' '+(sx-seg)+' '+(y+4); }
+  p+=' Z';
+  return '<path d="'+p+'" fill="'+color+'"/><rect x="'+x+'" y="'+y+'" width="'+w+'" height="2.5" fill="rgba(255,255,255,.14)"/>';
+}
+function glyph(type,cx,cy,color){
+  if(type==='cafe') return '<g stroke="'+color+'" stroke-width="1" fill="none"><path d="M'+(cx-3)+' '+(cy)+' h5 v2 a2.5 2.5 0 0 1 -5 0 z"/><path d="M'+(cx+2)+' '+(cy+0.5)+' h1.5 a1.2 1.2 0 0 1 0 2.4 h-0.4"/><path d="M'+(cx-1.5)+' '+(cy-2.5)+' q1 -1.5 0 -3 M'+(cx+1)+' '+(cy-2.5)+' q1 -1.5 0 -3"/></g>';
+  if(type==='grocer') return '<g fill="'+color+'"><circle cx="'+(cx-2.6)+'" cy="'+(cy+1)+'" r="1.5"/><circle cx="'+(cx+2.6)+'" cy="'+(cy+1)+'" r="1.5"/><circle cx="'+cx+'" cy="'+(cy-1.8)+'" r="1.5"/></g>';
+  if(type==='apoth') return '<g stroke="'+color+'" stroke-width="1" fill="none"><path d="M'+(cx-3)+' '+(cy+2.5)+' h6 l-1 -3 h-4 z"/><line x1="'+cx+'" y1="'+(cy-0.5)+'" x2="'+(cx+2)+'" y2="'+(cy-3.5)+'"/></g>';
+  return '<g fill="'+color+'"><circle cx="'+(cx-4)+'" cy="'+cy+'" r="0.8"/><circle cx="'+cx+'" cy="'+cy+'" r="0.8"/><circle cx="'+(cx+4)+'" cy="'+cy+'" r="0.8"/><path d="M'+cx+' '+(cy-4.5)+' l1 2 2.2 .2 -1.6 1.5 .5 2.1 -2.1 -1.1 -2.1 1.1 .5 -2.1 -1.6 -1.5 2.2 -.2 z"/></g>';
+}
+function bldg(type,tier,owner){
+  var m=TYPEMETA[type]||{c:'#E08A3C',w:60}, w=m.w*1.12, x=(100-w)/2, ground=98;
+  var fh=20, gh=40, crownH=tier>=3?12:(tier>=2?5:2);
+  var bodyTop=ground-gh-(tier-1)*fh, top=bodyTop-crownH;
+  var you=owner==='you';
+  var wall=you?'url(#wallYou)':'url(#wallVane)', win=you?'url(#emberWin)':'#B5474A';
+  var brass=tier>=3?'url(#brassGrad)':'#7d6a3c';
+  var s='';
+  s+='<rect x="'+(x-3)+'" y="'+ground+'" width="'+(w+6)+'" height="2.5" fill="rgba(0,0,0,.55)"/>';
+  s+='<rect x="'+x+'" y="'+bodyTop+'" width="'+w+'" height="'+(ground-bodyTop)+'" fill="'+wall+'" stroke="#0a090c" stroke-width="1"/>';
+  for(var f=1;f<tier;f++){ var wy=bodyTop+(f-1)*fh+5, cols=w>66?3:2, gap=w/(cols+1);
+    for(var c=1;c<=cols;c++){ var wx=x+gap*c-5; s+='<rect x="'+wx+'" y="'+wy+'" width="10" height="12" rx="1" fill="'+win+'" opacity="'+(you?0.92:0.78)+'"/><rect x="'+wx+'" y="'+(wy+5.5)+'" width="10" height="1" fill="rgba(0,0,0,.3)"/>'; } }
+  var gfTop=ground-gh;
+  s+='<rect x="'+(x+5)+'" y="'+(gfTop+8)+'" width="'+(w-10)+'" height="'+(gh-9)+'" fill="#0b090c"/>';
+  s+='<rect x="'+(x+w/2-5)+'" y="'+(gfTop+12)+'" width="10" height="'+(gh-13)+'" fill="'+win+'" opacity="'+(you?0.45:0.4)+'"/>';
+  s+=awning(x+3,gfTop+4,w-6,m.c);
+  s+='<rect x="'+(x+6)+'" y="'+(gfTop-7)+'" width="'+(w-12)+'" height="9" rx="1.5" fill="#14100b" stroke="'+brass+'" stroke-width="'+(tier>=3?1.2:0.8)+'"/>';
+  s+=glyph(type,x+w/2,gfTop-2.4,tier>=3?'#E6C878':m.c);
+  if(tier>=2) s+='<rect x="'+(x-1)+'" y="'+(bodyTop-2)+'" width="'+(w+2)+'" height="2.4" fill="'+brass+'"/>';
+  if(tier>=3){ s+='<rect x="'+(x+6)+'" y="'+top+'" width="'+(w-12)+'" height="'+crownH+'" fill="'+wall+'" stroke="'+brass+'" stroke-width="1"/>';
+    s+='<path d="M'+(x+w/2)+' '+(top-6)+' l3 4 -3 2 -3 -2 z" fill="'+brass+'"/>';
+    s+='<path d="M'+(x+w*0.7)+' '+(bodyTop-3)+' q2 -7 5 -9" stroke="rgba(237,230,214,.18)" stroke-width="1" fill="none"/>'; }
+  return '<svg class="bsvg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMax meet">'+s+'</svg>';
+}
+function vacantSVG(){ return '<svg class="bsvg" viewBox="0 0 100 100"><rect x="16" y="62" width="68" height="33" fill="none" stroke="#5A4A2A" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/><g stroke="#5A4A2A" stroke-width="1" opacity="0.28" fill="none"><circle cx="50" cy="78" r="7"/><line x1="50" y1="69" x2="50" y2="87"/><line x1="41" y1="78" x2="59" y2="78"/></g></svg>'; }
+function foreclosedSVG(){ return '<svg class="bsvg" viewBox="0 0 100 100"><rect x="26" y="56" width="48" height="41" fill="#4A1216" stroke="#7A1E22" stroke-width="1"/><g fill="#1a0c0e"><rect x="31" y="63" width="8" height="8"/><rect x="46" y="63" width="8" height="8"/><rect x="61" y="63" width="8" height="8"/><rect x="44" y="80" width="12" height="17"/></g><g stroke="#7A1E22" stroke-width="3" stroke-linecap="round"><line x1="30" y1="79" x2="70" y2="93"/><line x1="70" y1="79" x2="30" y2="93"/></g></svg>'; }
+
+/* ---- game actions (engine + telemetry + sound) ---- */
+function start(seed){ S=EOB.newGame(seed); sel=null; justBuilt=null; _gameNo++; _prev={}; el('overlay').className='overlay hidden'; el('toast').className='toast hidden'; track('game_start',{seed:seed}); render(); }
+function restart(){ sfx('click'); start((Math.floor(performance.now())%100000)+1); }
 function showIntro(){ el('intro').className='overlay'; track('intro_shown',{}); }
-function hideIntro(){ el('intro').className='overlay hidden'; track('intro_dismissed',{}); }
+function hideIntro(){ audioInit(); sfx('select'); el('intro').className='overlay hidden'; track('intro_dismissed',{}); }
 window.showIntro=showIntro; window.hideIntro=hideIntro;
 
-function selectLot(id){ sel=id; render(); }
+function selectLot(id){ sfx('select'); sel=id; render(); }
 window.selectLot=selectLot;
 
-function doBorrow(a){ var b=S.debt; EOB.borrow(S,a); if(S.debt>b) track('borrow',{amount:Math.round(S.debt-b),week:S.week,froth:Math.round(S.froth),debt:Math.round(S.debt)}); render(); }
-function doBorrowMax(){ var b=S.debt; EOB.borrow(S,EOB.borrowCapacity(S)); if(S.debt>b) track('borrow',{amount:Math.round(S.debt-b),week:S.week,froth:Math.round(S.froth),debt:Math.round(S.debt),max:true}); render(); }
-function doRepay(){ var b=S.debt; EOB.repay(S,S.debt); if(S.debt<b) track('repay',{amount:Math.round(b-S.debt),week:S.week}); render(); }
-function doBuy(type){ if(sel==null)return; var lot=sel,cost=EOB.costToBuy(S,type,sel); if(EOB.buy(S,lot,type)) track('build',{type:type,district:S.lots[lot].district,cost:cost,week:S.week,froth:Math.round(S.froth)}); render(); }
-function doUpgrade(){ if(sel==null)return; var b=S.lots[sel].biz,t=b?b.type:'',tr=b?b.tier:0; if(EOB.upgrade(S,sel)) track('upgrade',{type:t,toTier:tr+1,week:S.week}); render(); }
-function doRenew(){ if(sel==null)return; if(EOB.renew(S,sel)) track('renew',{week:S.week}); render(); }
-function doSell(){ if(sel==null)return; var b=S.lots[sel].biz,t=b?b.type:''; if(EOB.sell(S,sel)){ track('sell',{type:t,week:S.week}); sel=null; } render(); }
+function doBorrow(a){ var b=S.debt; EOB.borrow(S,a); if(S.debt>b){ sfx('borrow'); track('borrow',{amount:Math.round(S.debt-b),week:S.week,froth:Math.round(S.froth),debt:Math.round(S.debt)}); } render(); }
+function doBorrowMax(){ var b=S.debt; EOB.borrow(S,EOB.borrowCapacity(S)); if(S.debt>b){ sfx('borrow'); track('borrow',{amount:Math.round(S.debt-b),week:S.week,froth:Math.round(S.froth),debt:Math.round(S.debt),max:true}); } render(); }
+function doRepay(){ var b=S.debt; EOB.repay(S,S.debt); if(S.debt<b){ sfx('repay'); track('repay',{amount:Math.round(b-S.debt),week:S.week}); } render(); }
+function doBuy(type){ if(sel==null)return; var lot=sel,cost=EOB.costToBuy(S,type,sel); if(EOB.buy(S,lot,type)){ justBuilt=lot; sfx('build'); track('build',{type:type,district:S.lots[lot].district,cost:cost,week:S.week,froth:Math.round(S.froth)}); } render(); }
+function doUpgrade(){ if(sel==null)return; var b=S.lots[sel].biz,t=b?b.type:'',tr=b?b.tier:0; if(EOB.upgrade(S,sel)){ justBuilt=sel; sfx('build'); track('upgrade',{type:t,toTier:tr+1,week:S.week}); } render(); }
+function doRenew(){ if(sel==null)return; if(EOB.renew(S,sel)){ sfx('repay'); track('renew',{week:S.week}); } render(); }
+function doSell(){ if(sel==null)return; var b=S.lots[sel].biz,t=b?b.type:''; if(EOB.sell(S,sel)){ sfx('foreclose'); track('sell',{type:t,week:S.week}); sel=null; } render(); }
 window.doBorrow=doBorrow;window.doBorrowMax=doBorrowMax;window.doRepay=doRepay;
 window.doBuy=doBuy;window.doUpgrade=doUpgrade;window.doRenew=doRenew;window.doSell=doSell;
 
 function doEndWeek(){
-  if(S.over)return;
+  if(S.over)return; justBuilt=null;
   var rep=EOB.endWeek(S);
   showReport(rep);
   track('week_end', _assign(snapshot(), {week:rep.week, income:rep.income, interest:rep.interest, foreclosed:rep.marginSold.length, lapsed:rep.lapsed.length}));
-  if(rep.events.indexOf('crunch')>=0) track('crunch',{week:rep.week,froth:Math.round(S.froth)});
-  if(rep.marginSold.length) track('foreclosure',{week:rep.week,count:rep.marginSold.length});
-  if(S.over){ endGame(); return; }
+  var isCrunch=rep.events.indexOf('crunch')>=0, isFc=rep.marginSold.length>0;
+  if(isCrunch) track('crunch',{week:rep.week,froth:Math.round(S.froth)});
+  if(isFc) track('foreclosure',{week:rep.week,count:rep.marginSold.length});
+  // audio: week toll, then profit cascade or crunch/foreclosure
+  sfx('week');
+  if(isCrunch) setTimeout(function(){ sfx('crunch'); crunchFX(); }, 180);
+  if(isFc) setTimeout(function(){ sfx('foreclose'); }, isCrunch?520:200);
+  if(!isCrunch && rep.income>rep.interest) cashCascade(rep.income-rep.interest);
+  if(S.over){ render(); endGame(); return; }
   render();
 }
 window.doEndWeek=doEndWeek;
 
+function crunchFX(){
+  document.body.classList.remove('crunching'); void document.body.offsetWidth; document.body.classList.add('crunching');
+  var f=document.createElement('div'); f.className='crunchflash'; document.body.appendChild(f);
+  var st=document.createElement('div'); st.className='crunchstamp'; st.textContent='CRUNCH'; document.body.appendChild(st);
+  setTimeout(function(){ f.remove(); st.remove(); document.body.classList.remove('crunching'); }, 950);
+}
+
 function showReport(rep){
-  var parts=[];
-  parts.push('<b>Week '+rep.week+':</b> <span class="gd">+'+fmt(rep.income)+'</span> income');
+  var parts=['<span class="wk">Week '+ROMAN(rep.week)+'</span> &middot; <span class="gd">+'+fmt(rep.income)+'</span> income'];
   if(rep.interest>0)parts.push('<span class="bd">-'+fmt(rep.interest)+'</span> interest');
   var ev=[];
-  if(rep.events.indexOf('crunch')>=0)ev.push('<span class="ev">&#128165; CREDIT CRUNCH &mdash; interest spikes, prices crash, foreclosures hit the market.</span>');
+  if(rep.events.indexOf('crunch')>=0)ev.push('<span class="bd">&#9888; THE CRUNCH &mdash; interest spikes, prices crash, the bank is watching.</span>');
   if(rep.events.indexOf('recover')>=0)ev.push('<span class="gd">Markets steadied. Credit loosens again.</span>');
   if(rep.marginSold.length)ev.push('<span class="bd">Foreclosure &mdash; the bank took '+rep.marginSold.length+' of your weakest propert'+(rep.marginSold.length>1?'ies':'y')+' to cover the debt. You carry on.</span>');
   if(rep.lapsed.length)ev.push('<span class="ev">'+rep.lapsed.length+' lease'+(rep.lapsed.length>1?'s':'')+' expired &mdash; lost to the market.</span>');
-  var html=parts.join(' &middot; ');
-  if(ev.length)html+='<br>'+ev.join('<br>');
+  var html=parts.join(' &middot; '); if(ev.length)html+='<br>'+ev.join('<br>');
   var t=el('toast'); t.innerHTML=html; t.className='toast';
 }
 
+/* ---- render ---- */
 function render(){
-  // header / treasury
-  el('wk').textContent=S.week;
-  el('cash').textContent=fmt(S.cash);
-  el('debt').textContent=fmt(S.debt);
-  el('winc').textContent=fmt(EOB.weeklyIncome(S,false));
+  // week medallion
+  el('wk').textContent=ROMAN(S.week);
+  var rim=el('wkrim'); if(rim) rim.setAttribute('stroke-dashoffset', String(176*(1-Math.min(1,S.week/24))));
+  // ledger
+  roll('cash',Math.round(S.cash),fmt); roll('debt',Math.round(S.debt),fmt);
+  roll('winc',EOB.weeklyIncome(S,false),function(v){return '+'+fmt(v)+'/wk';});
   var nw=EOB.netWorth(S), vnw=EOB.vaneNetWorth(S);
-  el('nw').textContent=fmt(nw);
-  el('ynw').textContent=fmt(nw); el('vnw').textContent=fmt(vnw);
-  // race bar: your share of (you+vane)
-  var tot=Math.max(1,nw+vnw), share=Math.max(0,Math.min(1,nw/tot));
-  el('rfill').style.width=(share*100).toFixed(1)+'%';
-  el('rvane').style.left='50%';
-  el('rhint').innerHTML = nw>vnw ? 'You lead by '+fmt(nw-vnw)+'. Hold it to Week 24.' : 'Vane leads by '+fmt(vnw-nw)+'. '+(24-S.week+1)+' weeks to overtake him.';
-
+  var prevNw=_prev['nw']; roll('nw',nw,fmt);
+  var nd=el('nwd'); if(nd){ if(prevNw!=null&&nw!==prevNw){ nd.textContent=(nw>prevNw?'▲':'▼'); nd.className='delta '+(nw>prevNw?'up':'down'); } else nd.textContent=''; }
+  el('debt').className='lv debt'; if(S.debt<=0) el('debt').className='lv';
+  // race
+  roll('ynw',nw,fmt); roll('vnw',vnw,fmt);
+  var tot=Math.max(1,nw+vnw), share=Math.max(0.02,Math.min(0.98,nw/tot)), pct=(share*100).toFixed(1);
+  el('raceYou').style.width=pct+'%'; el('raceVane').style.width=(100-share*100).toFixed(1)+'%'; el('raceSeam').style.left=pct+'%';
+  var rh=el('rhint');
+  if(nw>vnw){ rh.className='race-hint lead'; rh.innerHTML='You lead by '+fmt(nw-vnw)+' &mdash; hold it to Week XXIV.'; }
+  else { rh.className='race-hint behind'; rh.innerHTML='Vane leads by '+fmt(vnw-nw)+' &mdash; '+(24-S.week+1)+' weeks to take him.'; }
+  el('cameoYou').className='cameo you'+(nw>vnw?' win':''); el('cameoVane').className='cameo vane'+(vnw>nw?' win':'');
   // credit
-  var f=Math.round(S.froth);
-  el('froth').style.width=f+'%';
-  var cs=EOB.creditLabel(S), col=cs==='CRUNCH'?'var(--red)':(cs==='FROTHY'?'var(--amber)':(cs==='TIGHT'?'var(--ink-dim)':'var(--green)'));
-  el('froth').style.background=col;
-  var st=el('cstate'); st.textContent=cs; st.style.background='rgba(0,0,0,.25)'; st.style.color=col; st.style.border='1px solid '+col;
+  var f=Math.round(S.froth); el('gNeedle').style.left=f+'%';
+  var cs=EOB.creditLabel(S), col=cs==='CRUNCH'?'var(--bad)':(cs==='FROTHY'?'var(--warn)':(cs==='TIGHT'?'var(--dim)':'var(--good)'));
+  var med=el('cstate'); med.textContent=cs; med.style.color=col;
+  el('creditCard').className='card credit'+(S.crunch>0?' crunch':(S.froth>=70?' frothy':''));
   el('irate').textContent=Math.round(EOB.interestRate(S)*100)+'%';
   el('bcap').textContent=fmt(EOB.borrowCapacity(S));
   var note;
-  if(S.crunch>0)note='&#128165; <b style="color:var(--red)">Crunch.</b> Debt is punishing and asset values have crashed &mdash; but foreclosed lots are going for half price if you have cash.';
-  else if(S.froth>=70)note='&#9888; <b style="color:var(--amber)">Froth is rising.</b> A crunch looms. If you\'re heavily leveraged, repay now &mdash; or get margin-called when it breaks.';
-  else if(S.froth<=35)note='Credit is tight. Borrowing power is limited.';
-  else note='Credit is calm. A good window to borrow and expand.';
+  if(S.crunch>0)note='&#9888; <b style="color:var(--vane-cold)">The crunch.</b> Debt is punishing, prices have crashed &mdash; but a foreclosed lot goes for half price, if you kept cash.';
+  else if(S.froth>=70)note='Froth is rising. A crunch looms &mdash; if you are heavily leveraged, repay now, or the bank will choose for you.';
+  else if(S.froth<=35)note='Credit is tight. Borrowing power is thin.';
+  else note='Credit is calm. A good window to borrow and seize ground.';
   el('cnote').innerHTML=note;
-
-  el('bmax').disabled=EOB.borrowCapacity(S)<=0;
-  el('rep').disabled=S.debt<=0||S.cash<=0;
-  el('b250').disabled=EOB.borrowCapacity(S)<300;
-
-  renderBoard();
-  renderDetail();
-  renderLog();
+  el('bmax').disabled=EOB.borrowCapacity(S)<=0; el('rep').disabled=S.debt<=0||S.cash<=0; el('b250').disabled=EOB.borrowCapacity(S)<300;
+  renderBoard(); renderDetail(); renderLog();
 }
 
 function renderBoard(){
   var html='';
   for(var d=0;d<4;d++){
-    var raw=EOB.districtRaw(S,d,false), demand=EOB.CFG.districtDemand;
-    var used=Math.min(150,Math.round(raw/demand*100));
-    var satcol=used<70?'var(--green)':(used<100?'var(--amber)':'var(--red)');
-    html+='<div class="district"><div class="dhead"><span class="nm">'+DNAME[d]+'</span><span class="sat">'+(raw>0?used+'% demand':'open')+'</span></div>';
-    html+='<div class="satbar"><i style="width:'+Math.min(100,used)+'%;background:'+satcol+'"></i></div><div class="lots">';
-    // lots in this district, ordered by x then y for a tidy 3x2
-    var ids=[];
-    for(var i=0;i<S.lots.length;i++)if(S.lots[i].district===d)ids.push(i);
+    var raw=EOB.districtRaw(S,d,false), demand=EOB.CFG.districtDemand, used=Math.min(150,Math.round(raw/demand*100));
+    // who corners this district?
+    var youN=0,vaneN=0;
+    for(var q=0;q<S.lots.length;q++){ if(S.lots[q].district!==d) continue; var bb=S.lots[q].biz; if(bb){ if(bb.owner==='you')youN++; else vaneN++; } }
+    var cornered = youN>=4 ? 'you' : (vaneN>=4 ? 'vane' : '');
+    var dcls='district'+(cornered==='you'?' cornered':(cornered==='vane'?' cornered byvane':''));
+    var prize=d===3?' prize':'';
+    html+='<div class="'+dcls+'"><span class="dcorner dc-tl"></span><span class="dcorner dc-br"></span>';
+    html+='<div class="dhead">'+DWARD[d]+'<span class="dname'+prize+'">'+DNAME[d]+'</span>'+
+      (cornered?'<span class="dtag'+(cornered==='vane'?' v':'')+'">CORNERED</span>':'')+'</div>';
+    // demand chevrons (10)
+    html+='<div class="gauge-chev">';
+    for(var t=0;t<10;t++){ var thr=(t+1)*10, on=used>=thr, cc='#241c14';
+      if(on){ cc = used>100?'var(--vane)':(thr>70?'var(--warn)':'var(--good)'); }
+      html+='<i style="background:'+cc+'"></i>'; }
+    html+='</div><div class="lots">';
+    var ids=[]; for(var i=0;i<S.lots.length;i++) if(S.lots[i].district===d) ids.push(i);
     ids.sort(function(a,b){var A=S.lots[a],B=S.lots[b];return (A.y-B.y)||(A.x-B.x);});
-    for(var k=0;k<ids.length;k++)html+=lotHtml(ids[k]);
+    for(var k=0;k<ids.length;k++) html+=lotHtml(ids[k]);
     html+='</div></div>';
   }
   el('districts').innerHTML=html;
@@ -815,113 +1062,111 @@ function renderBoard(){
 function lotHtml(id){
   var lot=S.lots[id], b=lot.biz, c='lot', inner='';
   if(sel===id)c+=' sel';
+  if(id===justBuilt)c+=' constructing';
   if(!b){
-    c+=' empty'; if(lot.distressed)c+=' distressed';
-    inner='<div class="ic">✕</div>'+(lot.distressed?'<div class="fc">FORECLOSURE -50%</div>':'<div class="tag">VACANT</div>');
+    if(lot.distressed){ c+=' distressed'; inner=foreclosedSVG()+'<div class="fcstamp">FORECLOSURE &minus;50%</div>'; }
+    else { c+=' empty'; inner=vacantSVG()+'<div class="vactag">Vacant</div>'; }
   } else if(b.owner==='you'){
-    c+=' you';
+    c+=' you t'+b.tier;
     var inc=Math.round(EOB.rawBizIncome(S,id)*EOB.districtEfficiency(S,lot.district));
-    var pips=''; for(var t=1;t<=3;t++)pips+=(t<=b.tier?'●':'○');
     var lw=b.lease<=3?' warn':'';
-    inner='<div class="lease'+lw+'">L'+b.lease+'</div><div class="ic">'+ICON[b.type]+'</div>'+
-      '<div class="ty">'+EOB.typeOf(b.type).name+'</div>'+
-      (b.ramp>0?'<div class="tag">opening…</div>':'<div class="inc">'+fmt(inc)+'/wk</div>')+
-      '<div class="pips">'+pips+'</div>';
+    inner=bldg(b.type,b.tier,'you')+
+      '<div class="pips">'+['','I','II','III'][b.tier]+'</div><div class="seal"></div>'+
+      '<div class="lease'+lw+'">'+b.lease+'w</div>'+
+      (b.ramp>0?'<div class="inc" style="color:var(--dim)">opening…</div>':'<div class="inc">'+fmt(inc)+'</div>');
   } else {
     c+=' vane';
-    inner='<div class="ic" style="opacity:.85">'+ICON[b.type]+'</div><div class="ty">'+EOB.typeOf(b.type).name+'</div><div class="tag">VANE</div>';
+    inner=bldg(b.type,b.tier,'vane')+'<div class="seal"></div><div class="vname">VANE</div>';
   }
   return '<div class="'+c+'" onclick="selectLot('+id+')">'+inner+'</div>';
 }
 
 function renderDetail(){
   var box=el('detail');
-  if(sel==null){ box.innerHTML='<h3>The City</h3><div class="muted">Select a lot to inspect it. Build diverse clusters for synergy &mdash; but spread across districts so you don\'t exhaust local demand.</div>'; return; }
+  if(sel==null){ box.innerHTML='<h3>The City</h3><div class="muted">Select a lot to inspect it. Build diverse clusters for synergy &mdash; but spread across districts so you don\'t exhaust the local trade.</div>'; return; }
   var lot=S.lots[sel], b=lot.biz;
   if(!b){ renderBuy(box,lot); return; }
-  if(b.owner!=='you'){ box.innerHTML='<h3>'+DNAME[lot.district]+'</h3><div class="row"><span class="k">Owner</span><span class="v bad">Cornelius Vane</span></div><div class="row"><span class="k">Type</span><span class="v">'+ICON[b.type]+' '+EOB.typeOf(b.type).name+'</span></div><div class="muted" style="margin-top:8px">Vane holds this block. You can\'t touch it &mdash; but a credit crunch may force him to sell.</div>'; return; }
+  if(b.owner!=='you'){
+    box.innerHTML='<h3>'+DNAME[lot.district]+'</h3><div class="deed"><div class="portrait">'+bldg(b.type,b.tier,'vane')+'</div></div>'+
+      '<div class="deedstamp">Held by C. T. Vane</div>'+
+      '<div class="muted">Vane holds this block &mdash; you cannot touch it. But a credit crunch can force even him to sell.</div>'; return;
+  }
   renderOwned(box,lot,b);
 }
 
 function renderBuy(box,lot){
-  var html='<h3>Vacant Lot &middot; '+DNAME[lot.district]+'</h3>';
-  if(lot.distressed)html+='<div class="toast" style="margin:0 0 8px;border-left-color:var(--amber)">&#128165; Foreclosure &mdash; selling at half price.</div>';
-  html+='<div class="muted" style="margin-bottom:6px">"+/wk" is the real boost to your whole empire &mdash; it already counts synergy with neighbors and this district\'s leftover demand.</div>';
-  // compute options, mark the best affordable one
-  var opt=[], bestIdx=-1, bestGain=0;
-  for(var i=0;i<EOB.TYPES.length;i++){
-    var ty=EOB.TYPES[i], cost=EOB.costToBuy(S,ty.key,sel), gain=evalPlace(sel,ty.key), afford=S.cash>=cost;
-    opt.push({ty:ty,cost:cost,gain:gain,afford:afford});
-    if(afford&&gain>bestGain){bestGain=gain;bestIdx=i;}
-  }
-  for(i=0;i<opt.length;i++){
-    var o=opt[i], dis=o.afford?'':' dis', best=(i===bestIdx)?' best':'';
-    var click=o.afford?' onclick="doBuy(\''+o.ty.key+'\')"':'';
-    html+='<div class="buyopt'+dis+best+'"'+click+'>'+
-      '<div class="bic">'+ICON[o.ty.key]+'</div>'+
-      '<div class="bmid"><div class="bn">'+o.ty.name+'</div><div class="bd">opens in 1 week</div></div>'+
-      '<div class="bright"><div class="bcost" style="color:'+(o.afford?'var(--cream)':'var(--red)')+'">'+fmt(o.cost)+'</div><div class="binc">+'+fmt(o.gain)+'/wk</div></div>'+
-      '</div>';
-  }
-  if(S.cash<EOB.costToBuy(S,'cafe',sel))html+='<div class="muted" style="margin-top:6px">Short on cash? <b style="color:var(--gold)">Borrow</b> from the Treasury panel to grab it before Vane does.</div>';
+  var html='<h3>Vacant Lot &middot; '+DNAME[lot.district]+'</h3><div class="deed"><div class="portrait">'+vacantSVG()+'</div></div>';
+  if(lot.distressed)html+='<div class="deedstamp" style="color:var(--ember);border-color:var(--ember)">Foreclosure &mdash; half price</div>';
+  html+='<div class="muted" style="margin-bottom:8px;font-size:11px">"+ /wk" is the real boost to your whole empire &mdash; synergy and this district\'s leftover trade already counted.</div>';
+  var opt=[],bestIdx=-1,bestGain=0;
+  for(var i=0;i<EOB.TYPES.length;i++){ var ty=EOB.TYPES[i],cost=EOB.costToBuy(S,ty.key,sel),gain=evalPlace(sel,ty.key),aff=S.cash>=cost;
+    opt.push({ty:ty,cost:cost,gain:gain,aff:aff}); if(aff&&gain>bestGain){bestGain=gain;bestIdx=i;} }
+  for(i=0;i<opt.length;i++){ var o=opt[i],dis=o.aff?'':' dis',pr=(i===bestIdx)?' prime':'',clk=o.aff?' onclick="doBuy(\''+o.ty.key+'\')"':'';
+    html+='<div class="acq'+dis+pr+'"'+clk+'>'+(i===bestIdx?'<span class="ribbon">★ Prime</span>':'')+
+      '<div class="ag">'+bldg(o.ty.key,1,'you')+'</div>'+
+      '<div class="am"><div class="an">'+o.ty.name+'</div><div class="ad">opens in 1 week</div></div>'+
+      '<div class="ar"><div class="ac" style="color:'+(o.aff?'var(--brass)':'var(--vane-cold)')+'">'+fmt(o.cost)+'</div><div class="ai">+'+fmt(o.gain)+'/wk</div></div></div>'; }
+  if(S.cash<EOB.costToBuy(S,'cafe',sel))html+='<div class="muted" style="margin-top:6px">Short on cash? <b style="color:var(--ember)">Borrow</b> from The Ledger to grab it before Vane does.</div>';
   box.innerHTML=html;
 }
 
 function renderOwned(box,lot,b){
-  var ty=EOB.typeOf(b.type);
-  var base=ty.income*EOB.CFG.tierIncome[b.tier];
-  var dn=diffNeighbors(sel);
-  var gross=EOB.projBizIncome(S,sel);
-  var eff=EOB.districtEfficiency(S,lot.district);
-  var net=Math.round(gross*eff);
-  var html='<h3>'+ICON[b.type]+' '+ty.name+' &middot; '+DNAME[lot.district]+'</h3>';
+  var ty=EOB.typeOf(b.type), base=ty.income*EOB.CFG.tierIncome[b.tier];
+  var dn=diffNeighbors(sel), gross=EOB.projBizIncome(S,sel), eff=EOB.districtEfficiency(S,lot.district), net=Math.round(gross*eff);
+  var html='<h3>'+ty.name+' &middot; '+DNAME[lot.district]+'</h3><div class="deed"><div class="portrait">'+bldg(b.type,b.tier,'you')+'</div></div>';
   html+='<div class="pl">';
-  html+='<div class="ln"><span>Base (tier '+b.tier+')</span><b>'+fmt(base)+'/wk</b></div>';
+  html+='<div class="ln"><span>Base (tier '+['','I','II','III'][b.tier]+')</span><b>'+fmt(base)+'/wk</b></div>';
   html+='<div class="ln"><span>Synergy &mdash; '+dn+' diverse neighbor'+(dn===1?'':'s')+'</span><b>+'+(dn*EOB.CFG.synergyPerNbr*100)+'%</b></div>';
-  html+='<div class="ln"><span>District demand used (you + rivals)</span><b>'+Math.round(EOB.districtRaw(S,lot.district,false)/EOB.CFG.districtDemand*100)+'% ('+Math.round(eff*100)+'¢/$)</b></div>';
-  html+='<div class="ln net"><span>Net income</span><b style="color:var(--green)">'+fmt(net)+'/wk</b></div>';
-  html+='</div>';
-  html+='<div class="row" style="margin-top:8px"><span class="k">Lease left</span><span class="v'+(b.lease<=3?' bad':'')+'">'+b.lease+' weeks</span></div>';
+  html+='<div class="ln"><span>District trade used</span><b>'+Math.round(EOB.districtRaw(S,lot.district,false)/EOB.CFG.districtDemand*100)+'% &middot; '+Math.round(eff*100)+'¢/$</b></div>';
+  html+='<div class="ln net"><span>Net income</span><b>'+fmt(net)+'/wk</b></div></div>';
+  html+='<div class="lrow" style="margin-top:8px"><span class="lk">Lease left</span><span class="lv'+(b.lease<=3?' debt':'')+'">'+b.lease+' weeks</span></div>';
   if(b.ramp>0)html+='<div class="muted">Opening &mdash; earns nothing until next week.</div>';
-  // actions
   html+='<div class="btns">';
   var uc=EOB.upgradeCost(S,sel);
-  if(uc!=null)html+='<button '+(S.cash>=uc?'':'disabled')+' onclick="doUpgrade()">Upgrade &mdash; '+fmt(uc)+'</button>';
-  else html+='<button disabled>Max tier</button>';
+  if(uc!=null)html+='<button '+(S.cash>=uc?'':'disabled')+' onclick="doUpgrade()">Upgrade &middot; '+fmt(uc)+'</button>';
+  else html+='<button disabled>Top tier</button>';
   var rc=EOB.renewCost(S,sel);
-  html+='<button '+(S.cash>=rc?'':'disabled')+' onclick="doRenew()">Renew lease &mdash; '+fmt(rc)+'</button>';
-  html+='<button onclick="doSell()">Sell &mdash; '+fmt(EOB.resaleValue(S,sel))+'</button>';
-  html+='</div>';
+  html+='<button '+(S.cash>=rc?'':'disabled')+' onclick="doRenew()">Renew &middot; '+fmt(rc)+'</button>';
+  html+='<button onclick="doSell()">Sell &middot; '+fmt(EOB.resaleValue(S,sel))+'</button></div>';
   box.innerHTML=html;
 }
 
 function renderLog(){
-  var html='', n=S.log.length;
-  for(var i=n-1;i>=Math.max(0,n-6);i--){
-    var r=S.log[i], bits=[];
-    bits.push('W'+r.week+': +'+fmt(r.income));
-    if(r.interest>0)bits.push('<span class="bd">-'+fmt(r.interest)+' int</span>');
-    if(r.events.indexOf('crunch')>=0)bits.push('<span class="ev">crunch</span>');
-    if(r.marginSold.length)bits.push('<span class="bd">foreclosed x'+r.marginSold.length+'</span>');
-    if(r.lapsed.length)bits.push('<span class="ev">lease lost x'+r.lapsed.length+'</span>');
-    html+='<div>'+bits.join(' &middot; ')+'</div>';
-  }
-  el('log').innerHTML=html||'<div>The city awaits.</div>';
+  var html='',n=S.log.length;
+  for(var i=n-1;i>=Math.max(0,n-7);i--){ var r=S.log[i],bits=['<span class="wk">'+ROMAN(r.week)+'</span> +'+fmt(r.income)];
+    if(r.interest>0)bits.push('<span class="bd">-'+fmt(r.interest)+'</span>');
+    if(r.events.indexOf('crunch')>=0)bits.push('<span class="bd">crunch</span>');
+    if(r.marginSold.length)bits.push('<span class="bd">foreclosed &times;'+r.marginSold.length+'</span>');
+    if(r.lapsed.length)bits.push('<span class="ev">lease lost &times;'+r.lapsed.length+'</span>');
+    html+='<div>'+bits.join(' &middot; ')+'</div>'; }
+  el('log').innerHTML=html||'<div>The city awaits its master.</div>';
 }
 
 function endGame(){
-  render();
-  var nw=EOB.netWorth(S), vnw=EOB.vaneNetWorth(S);
-  var won=S.won;
-  track('game_end',{won:won, week:S.week, nw:nw, vane:vnw, owned:EOB.ownedLots(S).length, gameNo:_gameNo});
-  _flush();
-  el('ovh').textContent=won?'The City Is Yours':'Vane Wins';
-  el('ovh').style.color=won?'var(--gold)':'var(--vane)';
+  var nw=EOB.netWorth(S), vnw=EOB.vaneNetWorth(S), won=S.won;
+  track('game_end',{won:won, week:S.week, nw:nw, vane:vnw, owned:EOB.ownedLots(S).length, gameNo:_gameNo}); _flush();
+  el('ovh').textContent=won?'The City Is Yours':'Vane Takes the City';
+  el('ovh').style.color=won?'var(--brass)':'var(--vane-cold)';
+  el('ovsub').textContent=won?'Incorporated · The Titan':'Bankrupt · The Collapse';
   el('ovp').textContent=S.reason;
-  el('ovb').innerHTML='You: <b style="color:var(--gold)">'+fmt(nw)+'</b> &nbsp;&middot;&nbsp; Vane: <b style="color:var(--vane)">'+fmt(vnw)+'</b>';
+  el('ovb').innerHTML='You &nbsp;<b style="color:var(--brass)">'+fmt(nw)+'</b>&nbsp; &middot; &nbsp;Vane &nbsp;<b style="color:var(--vane-cold)">'+fmt(vnw)+'</b>';
   el('overlay').className='overlay';
+  if(won){ confetti(); sfx('win'); } else sfx('lose');
+}
+function confetti(){
+  var box=el('overlay').querySelector('.box'); var cols=['#E6C878','#C9A24B','#E8843C'];
+  for(var i=0;i<40;i++){ var d=document.createElement('div'); d.className='confetti';
+    d.style.left=(Math.random()*100)+'%'; d.style.background=cols[i%3];
+    d.style.animationDuration=(2+Math.random()*2)+'s'; d.style.animationDelay=(Math.random()*0.6)+'s';
+    d.style.transform='rotate('+(Math.random()*360)+'deg)'; box.appendChild(d);
+    (function(x){ setTimeout(function(){ x.remove(); }, 4500); })(d); }
 }
 
+function evalPlace(lotId,type){ var before=EOB.weeklyIncome(S,false); S.lots[lotId].biz={type:type,owner:'you',tier:1,lease:EOB.CFG.leaseLen,ramp:0}; var after=EOB.weeklyIncome(S,false); S.lots[lotId].biz=null; return after-before; }
+function diffNeighbors(lotId){ var b=S.lots[lotId].biz,nb=EOB.neighborsOf(lotId),d=0; for(var i=0;i<nb.length;i++){var n=S.lots[nb[i]].biz;if(n&&n.owner==='you'&&n.type!==b.type)d++;} return Math.min(EOB.CFG.synergyMaxNbr,d); }
+
+document.addEventListener('pointerdown', function once(){ audioInit(); document.removeEventListener('pointerdown', once); });
+if(MUTED){ var mb=el('muteb'); if(mb){ mb.textContent='⊘'; mb.style.color='var(--dim)'; } }
 track('app_open',{});
 start((Date.now() % 2000000) + 1);
 showIntro();
