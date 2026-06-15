@@ -9,8 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --night:#0B0A0D; --felt:#13110C; --cobble:#161219; --panel:#1A1610; --raised:#241D2B;
-    --line:#3A3142; --brassline:#5A4A2A; --ink:#EDE6D6; --dim:#8C8398;
+    --night:#0B0A0D; --felt:#15110A; --cobble:#1e170d; --panel:#1c1710; --raised:#2a2017;
+    --line:#4a3a26; --brassline:#5A4A2A; --ink:#EDE6D6; --dim:#9c8e76;
+    --table:#16221b; --table2:#101a14;
     --ember:#E8843C; --ember-hi:#FFB066; --brass:#C9A24B; --brass-hi:#E6C878; --marble:#E8E2D4;
     --oxblood:#7A1E22; --oxblood-deep:#4A1216; --vane:#9B2D2F; --vane-cold:#B5474A;
     --good:#4E7C6B; --warn:#C9A24B; --bad:#9B2D2F;
@@ -84,15 +85,15 @@
   .main{display:grid;grid-template-columns:1fr 332px;gap:18px;align-items:start}
 
   /* ---------- city / board ---------- */
-  .city{position:relative;padding:16px 16px 12px;border-radius:6px;
-    background:linear-gradient(180deg,#171309,var(--felt));
-    box-shadow:inset 0 0 0 1px var(--brassline), inset 0 0 60px rgba(0,0,0,.6), 0 14px 40px rgba(0,0,0,.5)}
+  .city{position:relative;padding:18px 18px 14px;border-radius:6px;
+    background:radial-gradient(120% 70% at 50% -5%,rgba(201,162,75,.08),transparent 55%),linear-gradient(180deg,var(--table),var(--table2));
+    box-shadow:inset 0 0 0 1px var(--brassline), inset 0 0 0 4px rgba(18,28,22,.7), inset 0 0 70px rgba(0,0,0,.5), 0 16px 44px rgba(0,0,0,.55)}
   .cityplate{text-align:center;font-family:var(--serif);font-variant:small-caps;letter-spacing:.22em;font-size:11px;color:var(--brass);opacity:.75;margin-bottom:12px;
     border-bottom:1px solid var(--brassline);padding-bottom:9px}
   .smoke{position:absolute;inset:0;pointer-events:none;opacity:.5;z-index:2}
   .districts{display:grid;grid-template-columns:1fr 1fr;gap:14px;position:relative;z-index:3}
-  .district{position:relative;background:linear-gradient(180deg,#171019,var(--cobble));border-radius:5px;padding:9px 10px 11px;
-    box-shadow:inset 0 1px 0 rgba(232,132,60,.08), inset 0 -10px 18px rgba(4,3,2,.55), 0 0 0 1px var(--line)}
+  .district{position:relative;background:linear-gradient(180deg,#271c11,var(--cobble));border-radius:5px;padding:9px 10px 11px;
+    box-shadow:inset 0 1px 0 rgba(232,132,60,.1), inset 0 -10px 18px rgba(4,3,2,.5), 0 0 0 1px var(--brassline), 0 5px 12px rgba(0,0,0,.45)}
   .district.cornered{box-shadow:inset 0 1px 0 rgba(232,132,60,.1), inset 0 -10px 18px rgba(4,3,2,.55), 0 0 0 1px var(--ember), 0 0 16px rgba(232,132,60,.25)}
   .district.cornered.byvane{box-shadow:inset 0 1px 0 rgba(232,132,60,.05), inset 0 -10px 18px rgba(4,3,2,.55), 0 0 0 1px var(--vane), 0 0 16px rgba(155,45,47,.3)}
   .dcorner{position:absolute;width:12px;height:12px;border:1px solid var(--brassline);opacity:.7}
@@ -111,8 +112,8 @@
     transition:transform .12s ease, box-shadow .2s ease;}
   .lot:hover{transform:translateY(-2px)}
   .lot .bsvg{position:absolute;inset:0;width:100%;height:100%;display:block}
-  .lot.you{box-shadow:inset 0 0 0 1px #6b5526, 0 0 16px var(--glow)}
-  .lot.you.t3{box-shadow:inset 0 0 0 1px var(--brass), 0 0 26px var(--glow)}
+  .lot.you{background:radial-gradient(78% 66% at 50% 80%,rgba(232,132,60,.2),#150f08 76%);box-shadow:inset 0 0 0 1px #7a6128, 0 0 22px var(--glow)}
+  .lot.you.t3{background:radial-gradient(82% 72% at 50% 82%,rgba(255,176,102,.26),#1a1209 78%);box-shadow:inset 0 0 0 1px var(--brass), 0 0 32px var(--glow), 0 0 54px rgba(232,132,60,.22)}
   .lot.vane{box-shadow:inset 0 0 0 1px #5a2326; cursor:not-allowed; opacity:.92}
   .lot.vane:hover{transform:none}
   .lot.vane::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 5px,rgba(122,30,34,.10) 5px,rgba(122,30,34,.10) 7px);border-radius:4px;pointer-events:none}
@@ -274,8 +275,8 @@
 <body>
 <!-- shared SVG defs (gradients referenced by every building tile) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
-  <linearGradient id="wallYou" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#312416"/><stop offset="1" stop-color="#17110a"/></linearGradient>
-  <linearGradient id="wallVane" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#291519"/><stop offset="1" stop-color="#150c0f"/></linearGradient>
+  <linearGradient id="wallYou" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a5e3c"/><stop offset="0.55" stop-color="#54402a"/><stop offset="1" stop-color="#33271a"/></linearGradient>
+  <linearGradient id="wallVane" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5a3a3e"/><stop offset="0.55" stop-color="#3e262b"/><stop offset="1" stop-color="#26181c"/></linearGradient>
   <linearGradient id="emberWin" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB066"/><stop offset="1" stop-color="#E8843C"/></linearGradient>
   <linearGradient id="brassGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E6C878"/><stop offset="0.5" stop-color="#C9A24B"/><stop offset="1" stop-color="#7d5d1e"/></linearGradient>
 </defs></svg>
@@ -946,12 +947,16 @@ function bldg(type,tier,owner){
   for(var f=1;f<tier;f++){ var wy=bodyTop+(f-1)*fh+5, cols=w>66?3:2, gap=w/(cols+1);
     for(var c=1;c<=cols;c++){ var wx=x+gap*c-5; s+='<rect x="'+wx+'" y="'+wy+'" width="10" height="12" rx="1" fill="'+win+'" opacity="'+(you?0.92:0.78)+'"/><rect x="'+wx+'" y="'+(wy+5.5)+'" width="10" height="1" fill="rgba(0,0,0,.3)"/>'; } }
   var gfTop=ground-gh;
-  s+='<rect x="'+(x+5)+'" y="'+(gfTop+8)+'" width="'+(w-10)+'" height="'+(gh-9)+'" fill="#0b090c"/>';
-  s+='<rect x="'+(x+w/2-5)+'" y="'+(gfTop+12)+'" width="10" height="'+(gh-13)+'" fill="'+win+'" opacity="'+(you?0.45:0.4)+'"/>';
-  s+=awning(x+3,gfTop+4,w-6,m.c);
-  s+='<rect x="'+(x+6)+'" y="'+(gfTop-7)+'" width="'+(w-12)+'" height="9" rx="1.5" fill="#14100b" stroke="'+brass+'" stroke-width="'+(tier>=3?1.2:0.8)+'"/>';
+  // lit shop interior glowing warm — the heart of "this shop is alive / mine"
+  s+='<rect x="'+(x+3)+'" y="'+(gfTop+6)+'" width="'+(w-6)+'" height="'+(gh-6)+'" fill="'+win+'" opacity="'+(you?0.92:0.74)+'"/>';
+  var mulls=Math.max(3,Math.round((w-6)/10));
+  for(var mm=1;mm<mulls;mm++){ var mx=x+3+(w-6)/mulls*mm; s+='<rect x="'+(mx-0.55)+'" y="'+(gfTop+6)+'" width="1.1" height="'+(gh-6)+'" fill="#1c1006" opacity="0.6"/>'; }
+  s+='<rect x="'+(x+3)+'" y="'+(gfTop+6)+'" width="'+(w-6)+'" height="2" fill="#1c1006" opacity="0.5"/>';
+  s+='<rect x="'+(x+w/2-4.5)+'" y="'+(ground-13)+'" width="9" height="12" fill="#120c06"/>';
+  s+=awning(x+3,gfTop+3,w-6,m.c);
+  s+='<rect x="'+(x+6)+'" y="'+(gfTop-7)+'" width="'+(w-12)+'" height="9" rx="1.5" fill="#1c160e" stroke="'+brass+'" stroke-width="'+(tier>=3?1.3:0.9)+'"/>';
   s+=glyph(type,x+w/2,gfTop-2.4,tier>=3?'#E6C878':m.c);
-  if(tier>=2) s+='<rect x="'+(x-1)+'" y="'+(bodyTop-2)+'" width="'+(w+2)+'" height="2.4" fill="'+brass+'"/>';
+  s+='<rect x="'+(x-1)+'" y="'+(bodyTop-2)+'" width="'+(w+2)+'" height="'+(tier>=2?2.8:1.8)+'" fill="'+(tier>=2?brass:'#6f5832')+'"/>';
   if(tier>=3){ s+='<rect x="'+(x+6)+'" y="'+top+'" width="'+(w-12)+'" height="'+crownH+'" fill="'+wall+'" stroke="'+brass+'" stroke-width="1"/>';
     s+='<path d="M'+(x+w/2)+' '+(top-6)+' l3 4 -3 2 -3 -2 z" fill="'+brass+'"/>';
     s+='<path d="M'+(x+w*0.7)+' '+(bodyTop-3)+' q2 -7 5 -9" stroke="rgba(237,230,214,.18)" stroke-width="1" fill="none"/>'; }
