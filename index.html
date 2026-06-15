@@ -84,43 +84,62 @@
   /* ---------- layout ---------- */
   .main{display:grid;grid-template-columns:1fr 332px;gap:18px;align-items:start}
 
-  /* ---------- city / board ---------- */
-  .city{position:relative;padding:18px 18px 14px;border-radius:6px;
-    background:radial-gradient(120% 70% at 50% -5%,rgba(201,162,75,.08),transparent 55%),linear-gradient(180deg,var(--table),var(--table2));
-    box-shadow:inset 0 0 0 1px var(--brassline), inset 0 0 0 4px rgba(18,28,22,.7), inset 0 0 70px rgba(0,0,0,.5), 0 16px 44px rgba(0,0,0,.55)}
-  .cityplate{text-align:center;font-family:var(--serif);font-variant:small-caps;letter-spacing:.22em;font-size:11px;color:var(--brass);opacity:.75;margin-bottom:12px;
-    border-bottom:1px solid var(--brassline);padding-bottom:9px}
-  .smoke{position:absolute;inset:0;pointer-events:none;opacity:.5;z-index:2}
-  .districts{display:grid;grid-template-columns:1fr 1fr;gap:14px;position:relative;z-index:3}
-  .district{position:relative;background:linear-gradient(180deg,#271c11,var(--cobble));border-radius:5px;padding:9px 10px 11px;
-    box-shadow:inset 0 1px 0 rgba(232,132,60,.1), inset 0 -10px 18px rgba(4,3,2,.5), 0 0 0 1px var(--brassline), 0 5px 12px rgba(0,0,0,.45)}
-  .district.cornered{box-shadow:inset 0 1px 0 rgba(232,132,60,.1), inset 0 -10px 18px rgba(4,3,2,.55), 0 0 0 1px var(--ember), 0 0 16px rgba(232,132,60,.25)}
-  .district.cornered.byvane{box-shadow:inset 0 1px 0 rgba(232,132,60,.05), inset 0 -10px 18px rgba(4,3,2,.55), 0 0 0 1px var(--vane), 0 0 16px rgba(155,45,47,.3)}
-  .dcorner{position:absolute;width:12px;height:12px;border:1px solid var(--brassline);opacity:.7}
-  .dc-tl{top:5px;left:5px;border-right:0;border-bottom:0} .dc-br{bottom:5px;right:5px;border-left:0;border-top:0}
-  .dhead{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-  .dward{flex:0 0 17px;height:17px;opacity:.85}
-  .dname{flex:1;font-family:var(--serif);font-variant:small-caps;letter-spacing:.1em;font-size:13px;color:var(--marble);line-height:1.15}
-  .dname .prize{color:var(--brass)}
-  .dchar{display:block;font-family:var(--mono);font-variant:normal;font-size:8.5px;letter-spacing:.1em;color:var(--dim);text-transform:uppercase;margin-top:1px}
+  /* ---------- the city map (top-down, gaslit) ---------- */
+  .city{position:relative;padding:32px 24px 24px;border-radius:4px;overflow:hidden;
+    background:
+      radial-gradient(150% 85% at 50% 44%, rgba(201,162,75,.05), transparent 62%),
+      repeating-linear-gradient(90deg, transparent 0 15px, rgba(0,0,0,.11) 15px 16px),
+      repeating-linear-gradient(0deg, transparent 0 15px, rgba(0,0,0,.11) 15px 16px),
+      linear-gradient(180deg,#181309,#0b0906);
+    box-shadow:inset 0 0 0 2px var(--brassline), inset 0 0 0 6px #0a0806, inset 0 0 100px rgba(0,0,0,.6), 0 18px 50px rgba(0,0,0,.62)}
+  .cityplate{position:relative;z-index:6;text-align:center;font-family:var(--serif);font-variant:small-caps;letter-spacing:.32em;font-size:11px;color:var(--brass);opacity:.85;margin-bottom:16px}
+  /* the two grand avenues — a lamplit cross shown through the block gaps */
+  .city::before{content:"";position:absolute;left:50%;top:38px;bottom:14px;width:32px;margin-left:-16px;z-index:1;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 6px, transparent 6px 7px), linear-gradient(90deg,#181208,#272013 50%,#181208);
+    box-shadow:inset 2px 0 0 rgba(160,134,78,.3), inset -2px 0 0 rgba(160,134,78,.3)}
+  .city::after{content:"";position:absolute;top:50%;left:16px;right:16px;height:32px;margin-top:-16px;z-index:1;
+    background:repeating-linear-gradient(90deg, rgba(0,0,0,.22) 0 6px, transparent 6px 7px), linear-gradient(180deg,#181208,#272013 50%,#181208);
+    box-shadow:inset 0 2px 0 rgba(160,134,78,.3), inset 0 -2px 0 rgba(160,134,78,.3)}
+  .maplayer{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden;border-radius:4px}
+  .avdash-v{position:absolute;left:50%;top:44px;bottom:18px;border-left:1px dashed rgba(232,200,120,.28)}
+  .avdash-h{position:absolute;top:50%;left:20px;right:20px;border-top:1px dashed rgba(232,200,120,.28)}
+  .lamp{position:absolute;width:4px;height:4px;border-radius:50%;background:#ffe0a8;box-shadow:0 0 7px 2.5px rgba(232,132,60,.7)}
+  .water{position:absolute;left:18px;bottom:7px;width:47%;height:22px;z-index:1;border-radius:2px;
+    background:repeating-linear-gradient(94deg, rgba(150,210,210,.06) 0 2px, transparent 2px 9px), linear-gradient(180deg,#16302c,#0a1816);
+    box-shadow:inset 0 2px 6px rgba(0,0,0,.6), 0 0 14px rgba(40,110,100,.2)}
+  .pier{position:absolute;z-index:2;background:repeating-linear-gradient(90deg,#3a2c1a 0 2px,#241a10 2px 5px);box-shadow:0 1px 2px rgba(0,0,0,.6)}
+  .stname{position:absolute;z-index:2;font-family:var(--serif);font-style:italic;font-size:8.5px;letter-spacing:.22em;color:rgba(201,162,75,.42);white-space:nowrap;text-transform:uppercase}
+  .compassrose{position:absolute;right:13px;bottom:11px;width:30px;height:30px;z-index:6;opacity:.4}
+  .districts{display:grid;grid-template-columns:1fr 1fr;gap:30px;position:relative;z-index:3}
+  .district{position:relative;z-index:3;padding:23px 7px 7px;border-radius:10px;
+    background:radial-gradient(135% 130% at 50% 42%, rgba(44,33,20,.3), transparent 78%)}
+  .district.cornered{box-shadow:0 0 30px rgba(232,132,60,.2)}
+  .district.cornered.byvane{box-shadow:0 0 30px rgba(155,45,47,.24)}
+  .dcorner{display:none}
+  .dhead{position:absolute;top:5px;left:11px;right:9px;display:flex;align-items:baseline;gap:6px;z-index:6}
+  .dward{flex:0 0 14px;height:14px;opacity:.75;align-self:center}
+  .dname{flex:1;font-family:var(--serif);font-style:italic;letter-spacing:.03em;font-size:14px;color:var(--marble);line-height:1;text-shadow:0 1px 4px #000;white-space:nowrap}
+  .dname .prize{color:var(--brass-hi)}
+  .dchar{font-family:var(--mono);font-style:normal;font-size:8px;letter-spacing:.05em;color:var(--dim);text-transform:uppercase;margin-left:5px}
   .fit-good{color:var(--good)} .fit-bad{color:var(--vane-cold)} .fit-ok{color:var(--dim)}
   .acq .afit{font-size:9.5px;letter-spacing:.03em}
   .dtag{font-size:8.5px;letter-spacing:.16em;color:var(--ember);border:1px solid var(--ember);border-radius:8px;padding:1px 5px;opacity:.9}
   .dtag.v{color:var(--vane-cold);border-color:var(--vane)}
   .gauge-chev{display:flex;gap:2px;margin:0 0 8px;height:6px}
   .gauge-chev i{flex:1;clip-path:polygon(0 0,72% 0,100% 50%,72% 100%,0 100%);background:#241c14;transition:background .35s}
-  .lots{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
-  .lot{position:relative;aspect-ratio:1/1.04;border-radius:4px;cursor:pointer;overflow:visible;
-    background:linear-gradient(180deg,#13100b,#0d0b09);box-shadow:inset 0 0 0 1px var(--brassline);
+  .lots{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;position:relative;z-index:2}
+  .lot{position:relative;aspect-ratio:1/1.06;border-radius:1px;cursor:pointer;overflow:visible;
+    background:radial-gradient(85% 75% at 50% 88%, rgba(58,46,28,.42), rgba(11,9,6,.3));box-shadow:inset 0 0 0 1px rgba(74,60,36,.4);
     transition:transform .12s ease, box-shadow .2s ease;}
   .lot:hover{transform:translateY(-2px)}
-  .lot .bsvg{position:absolute;inset:0;width:100%;height:100%;display:block}
-  .lot.you{background:radial-gradient(78% 66% at 50% 80%,rgba(232,132,60,.2),#150f08 76%);box-shadow:inset 0 0 0 1px #7a6128, 0 0 22px var(--glow)}
-  .lot.you.t3{background:radial-gradient(82% 72% at 50% 82%,rgba(255,176,102,.26),#1a1209 78%);box-shadow:inset 0 0 0 1px var(--brass), 0 0 32px var(--glow), 0 0 54px rgba(232,132,60,.22)}
-  .lot.vane{box-shadow:inset 0 0 0 1px #5a2326; cursor:not-allowed; opacity:.92}
+  .lot .bsvg{position:absolute;inset:0;width:100%;height:100%;display:block;filter:drop-shadow(2px 3px 2px rgba(0,0,0,.55))}
+  .mapcoord{position:absolute;z-index:2;font-family:var(--mono);font-size:8px;letter-spacing:.1em;color:rgba(201,162,75,.32)}
+  .lot.you{background:radial-gradient(82% 72% at 50% 84%,rgba(232,132,60,.3),rgba(15,11,7,.35) 78%);box-shadow:inset 0 0 0 1px #7a6128, 0 0 24px var(--glow)}
+  .lot.you.t3{background:radial-gradient(88% 80% at 50% 86%,rgba(255,176,102,.36),rgba(20,14,9,.4) 80%);box-shadow:inset 0 0 0 1px var(--brass), 0 0 36px var(--glow), 0 0 64px rgba(232,132,60,.25)}
+  .lot.vane{box-shadow:inset 0 0 0 1px #5a2326; cursor:not-allowed; background:radial-gradient(82% 72% at 50% 84%,rgba(155,45,47,.16),rgba(11,8,6,.35) 78%)}
   .lot.vane:hover{transform:none}
   .lot.vane::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 5px,rgba(122,30,34,.10) 5px,rgba(122,30,34,.10) 7px);border-radius:4px;pointer-events:none}
-  .lot.empty{box-shadow:inset 0 0 0 1px var(--brassline)}
+  .lot.empty{background:radial-gradient(85% 75% at 50% 88%, rgba(40,32,20,.3), rgba(9,7,5,.25));box-shadow:inset 0 0 0 1px rgba(90,74,42,.32)}
   .lot.empty:hover{box-shadow:inset 0 0 0 1px var(--ember), 0 0 14px rgba(232,132,60,.2)}
   .lot.distressed{box-shadow:inset 0 0 0 1px var(--oxblood);animation:fcpulse 2.6s ease-in-out infinite}
   @keyframes fcpulse{0%,100%{box-shadow:inset 0 0 0 1px var(--oxblood)}50%{box-shadow:inset 0 0 0 1px var(--oxblood),0 0 14px rgba(122,30,34,.35)}}
@@ -143,10 +162,14 @@
 
   /* ---------- side cards ---------- */
   .side{display:flex;flex-direction:column;gap:14px}
-  .card{position:relative;background:linear-gradient(180deg,#1d1810,var(--panel));border-radius:5px;padding:13px 14px;
-    box-shadow:inset 0 0 0 1px var(--line), inset 0 1px 0 rgba(232,132,60,.05), 0 8px 22px rgba(0,0,0,.4)}
-  .card h3{font-family:var(--serif);font-variant:small-caps;letter-spacing:.18em;font-size:14px;color:var(--brass);
-    margin:0 0 10px;padding-bottom:8px;border-bottom:1px solid var(--brassline);font-weight:600}
+  .card{position:relative;background:linear-gradient(180deg,#241c12,#15100a);border-radius:4px;padding:15px 15px 15px;
+    box-shadow:inset 0 0 0 1px var(--brassline), inset 0 0 0 4px rgba(10,8,5,.5), inset 0 1px 0 rgba(232,132,60,.06), 0 10px 26px rgba(0,0,0,.5)}
+  .card::before{content:"";position:absolute;top:7px;left:7px;width:9px;height:9px;border-top:1px solid var(--brass);border-left:1px solid var(--brass);opacity:.5;pointer-events:none}
+  .card::after{content:"";position:absolute;top:7px;right:7px;width:9px;height:9px;border-top:1px solid var(--brass);border-right:1px solid var(--brass);opacity:.5;pointer-events:none}
+  .card h3{position:relative;font-family:var(--serif);font-variant:small-caps;letter-spacing:.22em;font-size:15px;font-weight:600;text-align:center;
+    margin:0 0 12px;padding-bottom:10px;color:var(--brass);
+    background:linear-gradient(180deg,var(--brass-hi),var(--brass) 58%,#977a32);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .card h3::after{content:"";position:absolute;left:8%;right:8%;bottom:0;height:1px;background:linear-gradient(90deg,transparent,var(--brassline) 18%,var(--brass) 50%,var(--brassline) 82%,transparent)}
   .ledger.card{background:linear-gradient(180deg,#1d1810,var(--panel)),radial-gradient(120px 80px at 80% 0,rgba(78,124,107,.10),transparent)}
   .lrow{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:6px 0;font-size:13px;position:relative}
   .lrow .lk{color:var(--dim);font-size:11.5px;letter-spacing:.04em;white-space:nowrap}
@@ -316,7 +339,27 @@
 
   <div class="main">
     <div class="city">
-      <div class="cityplate">A Register of Holdings &middot; MCMXXIV</div>
+      <div class="maplayer">
+        <span class="avdash-v"></span><span class="avdash-h"></span>
+        <span class="lamp" style="left:50%;top:50%;margin:-2px 0 0 -2px"></span>
+        <span class="lamp" style="left:50%;top:50px;margin-left:-2px"></span>
+        <span class="lamp" style="left:50%;bottom:22px;margin-left:-2px"></span>
+        <span class="lamp" style="left:26px;top:50%;margin-top:-2px"></span>
+        <span class="lamp" style="right:26px;top:50%;margin-top:-2px"></span>
+        <span class="lamp" style="left:50%;top:25%;margin-left:-2px"></span>
+        <span class="lamp" style="left:50%;top:75%;margin-left:-2px"></span>
+        <span class="lamp" style="left:27%;top:50%;margin-top:-2px"></span>
+        <span class="lamp" style="left:73%;top:50%;margin-top:-2px"></span>
+        <div class="water"></div>
+        <span class="pier" style="left:28%;bottom:20px;width:26px;height:3px"></span>
+        <span class="stname" style="left:50%;top:30%;transform:translateX(-50%) rotate(-90deg);transform-origin:center">The Bowery</span>
+        <span class="stname" style="left:31%;top:50%;transform:translateY(-50%)">Grand Street</span>
+        <span class="stname" style="left:33%;bottom:11px;color:rgba(130,190,185,.55)">East River</span>
+        <svg class="compassrose" viewBox="0 0 32 32" fill="none" stroke="#C9A24B" stroke-width="1"><circle cx="16" cy="16" r="13"/><path d="M16 3 l2.6 11 -2.6 4 -2.6 -4 z" fill="#C9A24B" stroke="none"/><path d="M16 29 l2.6 -11 -2.6 -4 -2.6 4 z"/><line x1="3" y1="16" x2="29" y2="16" opacity="0.35"/></svg>
+        <span class="mapcoord" style="left:7px;top:27%">I</span><span class="mapcoord" style="left:7px;top:51%">II</span><span class="mapcoord" style="left:7px;top:75%">III</span>
+        <span class="mapcoord" style="right:8px;top:27%">I</span><span class="mapcoord" style="right:8px;top:51%">II</span><span class="mapcoord" style="right:8px;top:75%">III</span>
+      </div>
+      <div class="cityplate">Lower East Side &mdash; A Register of Holdings &middot; MCMXXIV</div>
       <div class="districts" id="districts"></div>
       <div class="help"><span class="howto" onclick="showIntro()">ⓘ How to play</span> &nbsp;·&nbsp; click a vacant lot to build, your shops to manage them
         <div style="opacity:.55;margin-top:3px">anonymous gameplay stats are recorded to balance this prototype</div></div>
