@@ -247,6 +247,28 @@
   @keyframes stamp{0%{opacity:0;transform:translate(-50%,-50%) rotate(-7deg) scale(1.6)}20%{opacity:1;transform:translate(-50%,-50%) rotate(-7deg) scale(1)}80%{opacity:1}100%{opacity:0}}
   .confetti{position:absolute;top:-12px;width:7px;height:10px;opacity:.95;animation:fall linear forwards}
   @keyframes fall{0%{transform:translateY(-20px) rotate(0)}100%{transform:translateY(640px) rotate(540deg);opacity:.3}}
+
+  /* ---------- responsive (phones / tablets) ---------- */
+  @media (max-width:860px){
+    .main{grid-template-columns:1fr;gap:14px}
+    .side{order:2}
+    .mh-mid h1{font-size:26px;letter-spacing:.07em}
+    .mh-orn{flex-basis:48px}
+    .city{padding:12px 12px 10px}
+  }
+  @media (max-width:560px){
+    .wrap{padding:0 12px 40px}
+    .mh-orn{display:none}
+    .mh-mid h1{font-size:21px}
+    .mh-right{flex-basis:auto}
+    .race .cameo{display:none}
+    .districts{grid-template-columns:1fr;gap:11px}
+    .lots{gap:6px}
+    .overlay .box{padding:24px 22px;margin:0 14px}
+    .overlay h2{font-size:25px}
+    .crunchstamp{font-size:42px;padding:5px 16px}
+    .side{min-width:0}
+  }
 </style>
 </head>
 <body>
