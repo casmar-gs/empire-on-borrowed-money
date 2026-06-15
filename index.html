@@ -657,9 +657,9 @@ var S, sel=null;
    Pick a backend by setting TELEMETRY.mode + key/endpoint below. 'console' just logs
    locally so the game works standalone. Events flush in batches and on page-hide. */
 var TELEMETRY = {
-  mode: 'console',                 // 'console' | 'posthog' | 'endpoint'
+  mode: 'endpoint',                // 'console' | 'posthog' | 'endpoint'
   posthogKey: '', posthogHost: 'https://us.i.posthog.com',
-  endpoint: ''                     // generic POST url (Apps Script / Supabase / Worker)
+  endpoint: 'https://script.google.com/macros/s/AKfycbzsSlTIsBlWgXyD98ZmQpd1Nvk0gemqK7AL6EV6_NdlhqyWHFDj9nsCBYPi4w6kza9x/exec'
 };
 var _evq=[], _flushT=null, _session='s'+Math.random().toString(36).slice(2,9), _gameNo=0;
 function _assign(a,b){ for(var k in b){ if(Object.prototype.hasOwnProperty.call(b,k)) a[k]=b[k]; } return a; }
