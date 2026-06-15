@@ -22,22 +22,30 @@
   }
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
-  body{
+  body{ min-height:100%;
     background:
-      radial-gradient(1100px 520px at 50% -8%, #1c1410 0%, rgba(28,20,16,0) 60%),
-      radial-gradient(900px 700px at 50% 120%, #120f16 0%, rgba(0,0,0,0) 55%),
-      var(--night);
+      radial-gradient(1050px 720px at 42% 46%, rgba(244,184,102,.17), rgba(244,184,102,.05) 32%, transparent 58%),
+      radial-gradient(150% 130% at 44% 46%, transparent 30%, rgba(0,0,0,.82) 100%),
+      #06050a;
     color:var(--ink); font-family:var(--mono); font-size:13.5px; -webkit-font-smoothing:antialiased;
     letter-spacing:.01em;
   }
-  body::after{ /* subtle vignette */
-    content:""; position:fixed; inset:0; pointer-events:none; z-index:60; opacity:.6;
-    background:radial-gradient(140% 100% at 50% 30%, transparent 55%, rgba(6,5,8,.6) 100%);
+  body::after{ /* lamp falloff — the room darkens away from the map */
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:50;
+    background:radial-gradient(105% 92% at 44% 46%, transparent 38%, rgba(4,3,6,.72) 100%);
   }
-  .wrap{max-width:1200px;margin:0 auto;padding:0 20px 48px;position:relative;z-index:1}
+  .wrap{max-width:1280px;margin:0 auto;padding:24px 28px 44px;position:relative;z-index:1;
+    background:
+      radial-gradient(105% 75% at 50% 22%, rgba(64,46,24,.5), transparent 58%),
+      repeating-linear-gradient(47deg, rgba(0,0,0,.05) 0 3px, transparent 3px 7px),
+      linear-gradient(180deg,#241b10,#15100a 68%,#0f0a06);
+    box-shadow:inset 0 0 0 1px #312615, inset 0 0 170px rgba(0,0,0,.62), 0 38px 96px rgba(0,0,0,.72);
+    border-radius:3px;}
 
   /* ---------- masthead ---------- */
-  .masthead{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 4px 0}
+  .masthead{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:10px 20px;margin-bottom:14px;border-radius:3px;
+    background:linear-gradient(180deg,#3e2f18,#241a0d);
+    box-shadow:inset 0 1px 0 rgba(236,182,102,.2), inset 0 0 0 1px #6f5528, 0 0 0 3px #18110a, 0 0 0 4px #4e3c1f, 0 10px 24px rgba(0,0,0,.55)}
   .mh-orn{flex:0 0 70px;height:46px;opacity:.8}
   .mh-mid{flex:1;text-align:center}
   .mh-mid h1{
@@ -55,9 +63,7 @@
   .weekseal .wl{position:absolute;bottom:-4px;left:0;right:0;font-family:var(--serif);font-variant:small-caps;font-size:9px;letter-spacing:.2em;color:var(--dim)}
   .muteb{width:30px;height:30px;border:1px solid var(--brassline);background:transparent;border-radius:50%;color:var(--dim);cursor:pointer;font-size:13px;line-height:1;padding:0;transition:.15s}
   .muteb:hover{color:var(--brass);border-color:var(--brass)}
-  .deco-rule{height:6px;margin:14px 0 16px;
-    border-top:1px solid var(--brass);border-bottom:1px solid var(--brassline);position:relative}
-  .deco-rule::before{content:"";position:absolute;left:50%;top:-5px;width:9px;height:9px;transform:translateX(-50%) rotate(45deg);background:var(--brass);box-shadow:0 0 8px rgba(201,162,75,.5)}
+  .deco-rule{display:none}
 
   /* ---------- race tug-of-war ---------- */
   .race{display:flex;align-items:center;gap:12px;margin-bottom:14px}
@@ -87,11 +93,12 @@
   /* ---------- the city map (top-down, gaslit) ---------- */
   .city{position:relative;padding:32px 24px 24px;border-radius:4px;overflow:hidden;
     background:
-      radial-gradient(150% 85% at 50% 44%, rgba(201,162,75,.05), transparent 62%),
+      radial-gradient(86% 62% at 50% 6%, rgba(255,216,144,.14), transparent 52%),
+      radial-gradient(150% 90% at 50% 42%, rgba(201,162,75,.06), transparent 62%),
       repeating-linear-gradient(90deg, transparent 0 15px, rgba(0,0,0,.11) 15px 16px),
       repeating-linear-gradient(0deg, transparent 0 15px, rgba(0,0,0,.11) 15px 16px),
       linear-gradient(180deg,#181309,#0b0906);
-    box-shadow:inset 0 0 0 2px var(--brassline), inset 0 0 0 6px #0a0806, inset 0 0 100px rgba(0,0,0,.6), 0 18px 50px rgba(0,0,0,.62)}
+    box-shadow:inset 0 0 0 2px #7a5c2c, inset 0 0 0 6px #0a0806, inset 0 26px 38px rgba(255,212,140,.09), inset 0 0 110px rgba(0,0,0,.55), 0 0 0 3px #66502a, 0 0 0 5px #170f08, 0 0 80px rgba(236,176,96,.13), 0 28px 66px rgba(0,0,0,.72)}
   .cityplate{position:relative;z-index:6;text-align:center;font-family:var(--serif);font-variant:small-caps;letter-spacing:.32em;font-size:11px;color:var(--brass);opacity:.85;margin-bottom:16px}
   /* the two grand avenues — a lamplit cross shown through the block gaps */
   .city::before{content:"";position:absolute;left:50%;top:38px;bottom:14px;width:32px;margin-left:-16px;z-index:1;
@@ -170,7 +177,48 @@
     margin:0 0 12px;padding-bottom:10px;color:var(--brass);
     background:linear-gradient(180deg,var(--brass-hi),var(--brass) 58%,#977a32);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
   .card h3::after{content:"";position:absolute;left:8%;right:8%;bottom:0;height:1px;background:linear-gradient(90deg,transparent,var(--brassline) 18%,var(--brass) 50%,var(--brassline) 82%,transparent)}
-  .ledger.card{background:linear-gradient(180deg,#1d1810,var(--panel)),radial-gradient(120px 80px at 80% 0,rgba(78,124,107,.10),transparent)}
+  .ledger.card{padding:14px 15px 15px 30px;color:#3a2c18;
+    background:
+      linear-gradient(90deg, transparent 22px, rgba(150,55,40,.5) 22px 23px, transparent 23px),
+      repeating-linear-gradient(180deg, transparent 0 22px, rgba(70,108,128,.26) 22px 23px),
+      linear-gradient(180deg,#ece0c2,#e0d2b0 75%,#d8c9a4);
+    box-shadow:inset 0 0 0 1px #c0a460, inset 0 0 26px rgba(120,86,36,.16), 0 0 0 5px #241a0e, 0 14px 30px rgba(0,0,0,.6);border-radius:1px}
+  .ledger.card::before,.ledger.card::after{display:none}
+  .ledger.card h3{color:#7a2a16;-webkit-text-fill-color:#7a2a16;background:none;letter-spacing:.18em;text-align:left;margin-bottom:8px;padding-bottom:6px}
+  .ledger.card h3::after{background:#9a6a2a;opacity:.5;left:0;right:30%}
+  .ledger.card .lk{color:#6a543a}
+  .ledger.card .lv{color:#2a1d0e}
+  .ledger.card .lv.brass{color:#7a5a1e} .ledger.card .lv.debt{color:#9a2a18} .ledger.card .lv.good{color:#3a5a26}
+  .ledger.card .lrow.net{border-top-color:#a0844a} .ledger.card .lrow.net .lk{color:#3a2c18} .ledger.card .lrow.net .lv{color:#241a0c}
+  .ledger.card .delta.up{color:#3a5a26} .ledger.card .delta.down{color:#9a2a18}
+  .ledger.card .btns{margin-top:13px}
+  .ledger.card button{color:#4a3a20;border-color:#b0925a;background:rgba(255,250,235,.25)}
+  .ledger.card button:hover:not(:disabled){border-color:#7a2a16;color:#7a2a16;background:rgba(255,250,235,.5)}
+  .ledger.card button.ember{color:#fdeede;border-color:#9a4a1c}
+  /* credit gauge as a brass desk instrument */
+  .card.credit{background:linear-gradient(180deg,#1c160d,#100b07);
+    box-shadow:inset 0 0 0 1px #6f5528, inset 0 0 0 4px rgba(8,6,4,.55), inset 0 2px 12px rgba(0,0,0,.6), 0 0 0 3px #3a2c16, 0 0 0 4px #140e08, 0 12px 26px rgba(0,0,0,.6)}
+  .card.credit::before,.card.credit::after{border-color:var(--brass-hi)}
+  /* deed / acquisition slip as an aged paper document */
+  .card.deed{padding:14px 16px;color:#3a2c18;transform:rotate(-.4deg);
+    background:repeating-linear-gradient(180deg, transparent 0 21px, rgba(70,108,128,.2) 21px 22px), linear-gradient(180deg,#ece0c2,#dccfaa 82%);
+    box-shadow:inset 0 0 0 1px #c0a460, inset 0 0 26px rgba(120,86,36,.14), 0 0 0 4px #241a0e, 0 14px 30px rgba(0,0,0,.6);border-radius:1px}
+  .card.deed::before,.card.deed::after{display:none}
+  .card.deed h3{color:#7a2a16;-webkit-text-fill-color:#7a2a16;background:none;letter-spacing:.16em;text-align:left}
+  .card.deed h3::after{background:#9a6a2a;opacity:.5;right:30%}
+  .card.deed .muted{color:#6a543a}
+  .card.deed .pl .ln{color:#6a543a} .card.deed .pl .ln b{color:#2a1d0e}
+  .card.deed .pl .net{border-top-color:#a0844a} .card.deed .pl .net b{color:#3a5a26}
+  .card.deed .lrow .lk,.card.deed .lk{color:#6a543a} .card.deed .lrow .lv{color:#2a1d0e}
+  .card.deed button{color:#4a3a20;border-color:#b0925a;background:rgba(255,250,235,.3)}
+  .card.deed button:hover:not(:disabled){border-color:#7a2a16;color:#7a2a16;background:rgba(255,250,235,.55)}
+  .card.deed .acq{border-color:#b0925a}
+  .card.deed .acq:hover:not(.dis){border-color:#7a2a16;background:rgba(255,250,235,.4)}
+  .card.deed .an{color:#3a2c14} .card.deed .ad{color:#6a543a} .card.deed .ai{color:#3a5a26}
+  .card.deed .ribbon{background:#9a6a2a;color:#fff}
+  .card.deed .deedstamp{color:#7a2a16;border-color:#9a3a20}
+  .card.deed .fit-good{color:#3a5a26} .card.deed .fit-bad{color:#9a2a18} .card.deed .fit-ok{color:#6a543a}
+  .card.deed .dchar{color:#7a5a2a}
   .lrow{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:6px 0;font-size:13px;position:relative}
   .lrow .lk{color:var(--dim);font-size:11.5px;letter-spacing:.04em;white-space:nowrap}
   .lrow .lk::after{content:"";position:absolute}
@@ -798,7 +846,7 @@ function renderBuy(box,lot){
     html+='<div class="acq'+dis+pr+'"'+clk+'>'+(i===bestIdx?'<span class="ribbon">★ Prime</span>':'')+
       '<div class="ag">'+bldg(o.ty.key,1,'you')+'</div>'+
       '<div class="am"><div class="an">'+o.ty.name+'</div><div class="ad afit '+fi.cls+'">'+fi.label+' &middot; '+fi.pct+'</div></div>'+
-      '<div class="ar"><div class="ac" style="color:'+(o.aff?'var(--brass)':'var(--vane-cold)')+'">'+fmt(o.cost)+'</div><div class="ai">+'+fmt(o.gain)+'/wk</div></div></div>'; }
+      '<div class="ar"><div class="ac" style="color:'+(o.aff?'#7a5a1e':'#9a2a18')+'">'+fmt(o.cost)+'</div><div class="ai">+'+fmt(o.gain)+'/wk</div></div></div>'; }
   if(S.cash<EOB.costToBuy(S,'cafe',sel))html+='<div class="muted" style="margin-top:6px">Short on cash? <b style="color:var(--ember)">Borrow</b> from The Ledger to grab it before Vane does.</div>';
   box.innerHTML=html;
 }
