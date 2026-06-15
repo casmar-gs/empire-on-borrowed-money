@@ -3,5 +3,6 @@ Thumbs.db
 *.log
 node_modules/
 _shot.html
+_s_*.html
 _mtref/
 DESIGN-NOTES.md

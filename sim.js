@@ -38,6 +38,25 @@ function bestPlacement(s, types) {
   }
   return best;
 }
+// crude EV: buy out Vane's best-value affordable lot when weeks remain to recoup the premium
+function buyoutBest(s, opts) {
+  opts = opts || {};
+  var minWeeksLeft = opts.minWeeksLeft == null ? 5 : opts.minWeeksLeft;
+  var weeks = CFG.deadline - s.week;
+  if (weeks < minWeeksLeft) return false;
+  var lots = EOB.vaneLots(s), best = null, bestScore = 0;
+  for (var i = 0; i < lots.length; i++) {
+    var id = lots[i]; if (!EOB.canBuyout(s, id)) continue;
+    var b = s.lots[id].biz;
+    var gross = EOB.typeOf(b.type).income * CFG.tierIncome[b.tier] * EOB.affinity(b.type, s.lots[id].district);
+    var net = gross * EOB.districtEfficiency(s, s.lots[id].district, false);
+    var score = net * weeks - EOB.buyoutCost(s, id);     // rough net-worth EV of seizing it
+    if (score > bestScore) { bestScore = score; best = id; }
+  }
+  if (best == null) return false;
+  if (s.cash - EOB.buyoutCost(s, best) < (opts.buffer || 0)) return false;
+  return EOB.buyout(s, best);
+}
 function renewExpiring(s, thresh) {
   var owned = EOB.ownedLots(s);
   for (var i = 0; i < owned.length; i++) {
@@ -174,6 +193,20 @@ var STRAT = {
       }
       if (!EOB.buy(s, best.lot, best.type)) break;
     }
+    // when the board is thin on fresh lots, put surplus cash to work seizing Vane's blocks
+    if (EOB.emptyLots(s).length <= 3) { var g2 = 0; while (g2++ < 4 && buyoutBest(s, { minWeeksLeft: 5, buffer: 600 })) {} }
+  },
+  raider: function (s) {                                          // tests the ceiling: hoard, then take Vane's empire by force
+    renewExpiring(s, 3);
+    var g = 0; while (g++ < 6 && buyoutBest(s, { minWeeksLeft: 2, buffer: 0 })) {}   // buy out aggressively, little buffer
+    if (s.crunch > 0) { buyDistressed(s, false); return; }
+    var guard = 0;                                                // fill remaining cheap lots between raids
+    while (guard++ < 30) {
+      var best = bestPlacement(s, affordableTypes(s, s.froth < 60));
+      if (!best || best.roi < 0.03) break;
+      if (s.cash < best.cost) { if (s.froth >= 60) break; EOB.borrow(s, best.cost - s.cash); }
+      if (!EOB.buy(s, best.lot, best.type)) break;
+    }
   }
 };
 
@@ -227,6 +260,7 @@ var g3 = gate(results.casual.win >= 0.60 && results.casual.win <= 0.92, 'a thoug
 var g4 = gate(results.turtle.win >= 0.25 && results.turtle.win <= 0.65, 'cautious no-leverage play is viable (turtle ' + pct(results.turtle.win) + ', want 25-65%)');
 var g5 = gate((results.casual.win - results.turtle.win) >= 0.15, 'leverage is a real edge (leveraged play beats no-leverage turtle by ' + pct(results.casual.win - results.turtle.win) + ', want >=15pts)');
 var g6 = gate(results.blitz.win <= 0.25, 'reckless over-leverage loses the race (blitz ' + pct(results.blitz.win) + ' win, ' + pct(results.blitz.fc) + ' foreclosed)');
-var bestComp = Math.max(results.casual.win, results.diversify.win, results.vulture.win, results.smart.win, results.turtle.win);
+var bestComp = Math.max(results.casual.win, results.diversify.win, results.vulture.win, results.smart.win, results.turtle.win, results.raider.win);
 var g7 = gate(bestComp <= 0.90, 'the race stays contested — no competent strategy is a near-lock (best ' + pct(bestComp) + ', want <=90%)');
-console.log('\nALL GATES: ' + (g1 && g2 && g3 && g4 && g5 && g6 && g7 ? 'PASS' : 'FAIL'));
+var g8 = gate(results.raider.win <= 0.90, 'buyout/raider is a tool, not a solve (raider ' + pct(results.raider.win) + ', want <=90%)');
+console.log('\nALL GATES: ' + (g1 && g2 && g3 && g4 && g5 && g6 && g7 && g8 ? 'PASS' : 'FAIL'));

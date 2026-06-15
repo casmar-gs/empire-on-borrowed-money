@@ -44,7 +44,9 @@
     // NOTE: Vane fully reinvests, so his strength compounds and is sensitive to these
     // knobs. Tuned so imperfect human play can win; leverage is a strong edge, not mandatory.
     vaneMaxLots: 12,           // how much of the board he claims
-    vaneDumpInCrunch: 2        // lots he fire-sells (distressed) when a crunch hits
+    vaneDumpInCrunch: 2,       // lots he fire-sells (distressed) when a crunch hits
+    buyoutMult: 2.9,           // premium over resale to wrest a block from Vane (hostile takeover)
+    vaneFloorLots: 5           // Vane won't be bought below this — he holds his crown jewels
   };
 
   var TYPES = [
@@ -255,6 +257,34 @@
     amt = Math.min(amt, s.cash, s.debt); if (amt <= 0) return false;
     s.debt -= amt; s.cash -= amt; return true;
   }
+  // ---- hostile takeover: wrest a block from Vane for cash ----
+  // Late-game, when the board is claimed, capital has nowhere to grow but UP (tiers) or
+  // INTO the rival. A buyout pays a premium over resale; Vane is forced out at a distressed
+  // price, so it dents HIS net worth and grows yours at once — the only way to attack his lead
+  // directly. Costed so it's a timed strategic strike (strong with weeks to recoup), not a
+  // press-to-win button.
+  function buyoutCost(s, lotId) {
+    var b = s.lots[lotId] && s.lots[lotId].biz; if (!b || b.owner !== 'vane') return null;
+    var full = typeOf(b.type).cost * CFG.resaleFrac * CFG.tierIncome[b.tier];
+    return Math.round(full * CFG.buyoutMult);
+  }
+  function canBuyout(s, lotId) {
+    if (s.over) return false;
+    var b = s.lots[lotId] && s.lots[lotId].biz; if (!b || b.owner !== 'vane') return false;
+    if (vaneLots(s).length <= CFG.vaneFloorLots) return false;   // he won't part with his core holdings
+    var c = buyoutCost(s, lotId);
+    return c != null && s.cash >= c;
+  }
+  function buyout(s, lotId) {
+    if (!canBuyout(s, lotId)) return false;
+    var b = s.lots[lotId].biz;
+    var full = typeOf(b.type).cost * CFG.resaleFrac * CFG.tierIncome[b.tier];
+    s.cash -= buyoutCost(s, lotId);
+    s.vaneCash += Math.round(full);   // Vane is bought out at fair market value (he can redeploy it)
+    b.owner = 'you'; b.ramp = CFG.rampWeeks; b.lease = CFG.leaseLen;  // takeover: brief disruption, fresh lease
+    s.ownedTypeCount[b.type] = (s.ownedTypeCount[b.type] || 0) + 1;
+    return true;
+  }
 
   // ---- the week tick ----
   function endWeek(s) {
@@ -430,6 +460,7 @@
     rawBizIncome: rawBizIncome, projBizIncome: projBizIncome,
     districtRaw: districtRaw, districtEfficiency: districtEfficiency, weeklyIncome: weeklyIncome,
     canBuy: canBuy, buy: buy, upgrade: upgrade, renew: renew, sell: sell,
+    buyoutCost: buyoutCost, canBuyout: canBuyout, buyout: buyout,
     borrow: borrow, repay: repay, endWeek: endWeek,
     ownedLots: ownedLots, emptyLots: emptyLots, creditLabel: creditLabel,
     vaneLots: vaneLots, vaneNetWorth: vaneNetWorth
