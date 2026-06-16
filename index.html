@@ -960,6 +960,9 @@ var TELEMETRY = {
   posthogKey: '', posthogHost: 'https://us.i.posthog.com',
   endpoint: 'https://script.google.com/macros/s/AKfycbzsSlTIsBlWgXyD98ZmQpd1Nvk0gemqK7AL6EV6_NdlhqyWHFDj9nsCBYPi4w6kza9x/exec'
 };
+// Only the LIVE site reports. file://, localhost, and headless test runs log to console
+// instead of polluting the real Sheet — so dev/verification traffic never skews the data.
+try{ if(!/(^|\.)github\.io$/i.test(location.hostname)) TELEMETRY.mode='console'; }catch(e){ TELEMETRY.mode='console'; }
 var _evq=[], _flushT=null, _session='s'+Math.random().toString(36).slice(2,9), _gameNo=0;
 function _assign(a,b){ for(var k in b){ if(Object.prototype.hasOwnProperty.call(b,k)) a[k]=b[k]; } return a; }
 function _pid(){ try{ var v=localStorage.getItem('eob_pid'); if(!v){ v='p'+Math.random().toString(36).slice(2,10); localStorage.setItem('eob_pid',v); } return v; }catch(e){ return 'p_anon'; } }
